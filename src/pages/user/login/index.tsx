@@ -1,26 +1,14 @@
 import logo from '@/assets/logo.svg';
 import Footer from '@/components/Footer';
 import { fakeAccountLogin, LoginParamsType } from '@/services/login';
-import { Alert, Checkbox, message } from 'antd';
+import { Checkbox, message } from 'antd';
 import React, { useState } from 'react';
-import { history, History, Link, SelectLang, useModel } from 'umi';
-import LoginFrom from './components/Login';
+import { History, history, Link, SelectLang, useModel } from 'umi';
+
+import LoginForm from './components/Login';
 import styles from './style.less';
 
-const { Tab, Username, Password, Mobile, Captcha, Submit } = LoginFrom;
-
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
+const { Email, Password, Submit } = LoginForm;
 
 /**
  * This method will jump to the location of the redirect parameter
@@ -38,17 +26,15 @@ const replaceGoto = () => {
 };
 
 const Login: React.FC<{}> = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginStateType>({});
   const [submitting, setSubmitting] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
   const [autoLogin, setAutoLogin] = useState(true);
-  const [type, setType] = useState<string>('account');
 
   const handleSubmit = async (values: LoginParamsType) => {
     setSubmitting(true);
     try {
       // Log in
-      const msg = await fakeAccountLogin({ ...values, type });
+      const msg = await fakeAccountLogin({ ...values });
       if (msg.status === 'ok' && initialState) {
         message.success('Login successful!');
         const currentUser = await initialState?.fetchUserInfo();
@@ -59,15 +45,11 @@ const Login: React.FC<{}> = () => {
         replaceGoto();
         return;
       }
-      // If it fails to set the user error message
-      setUserLoginState(msg);
     } catch (error) {
       message.error('Login failed, please try again');
     }
     setSubmitting(false);
   };
-
-  const { status, type: loginType } = userLoginState;
 
   return (
     <div className={styles.container}>
@@ -86,65 +68,29 @@ const Login: React.FC<{}> = () => {
         </div>
 
         <div className={styles.main}>
-          <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-            <Tab key="account" tab="Password login">
-              {status === 'error' && loginType === 'account' && !submitting && (
-                <LoginMessage content="Incorrect Username or Password" />
-              )}
+          <LoginForm onSubmit={handleSubmit}>
+            <Email
+              name="email"
+              placeholder="Email"
+              rules={[
+                {
+                  type: 'email',
+                  required: true,
+                  message: 'Please enter your email!',
+                },
+              ]}
+            />
+            <Password
+              name="password"
+              placeholder="Password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your password',
+                },
+              ]}
+            />
 
-              <Username
-                name="username"
-                placeholder="Username: admin or user"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter your username!',
-                  },
-                ]}
-              />
-              <Password
-                name="password"
-                placeholder="Password: ant.design"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter your password',
-                  },
-                ]}
-              />
-            </Tab>
-            <Tab key="mobile" tab="Mobile number login">
-              {status === 'error' && loginType === 'mobile' && !submitting && (
-                <LoginMessage content="Verification Code" />
-              )}
-              <Mobile
-                name="mobile"
-                placeholder="phone number"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter phone number',
-                  },
-                  {
-                    pattern: /^1\d{10}$/,
-                    message: 'Invalid phone number',
-                  },
-                ]}
-              />
-              <Captcha
-                name="captcha"
-                placeholder="Verification code"
-                countDown={120}
-                getCaptchaButtonText=""
-                getCaptchaSecondText="Seconds"
-                rules={[
-                  {
-                    required: true,
-                    message: 'please enter verification code!',
-                  },
-                ]}
-              />
-            </Tab>
             <div>
               <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
                 remember me
@@ -158,7 +104,7 @@ const Login: React.FC<{}> = () => {
               </a>
             </div>
             <Submit loading={submitting}>log in</Submit>
-          </LoginFrom>
+          </LoginForm>
         </div>
       </div>
       <Footer />
