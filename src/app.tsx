@@ -7,32 +7,34 @@ import Footer from '@/components/Footer';
 import { ResponseError } from 'umi-request';
 import { queryCurrent } from './services/user';
 import defaultSettings from '../config/defaultSettings';
+import { pagePath } from './routes';
 
 export async function getInitialState(): Promise<{
   settings?: LayoutSettings;
-  currentUser?: API.CurrentUser;
-  fetchUserInfo: () => Promise<API.CurrentUser | undefined>;
+  currentUser?: DTO.UserDto;
+  accessToken?: string;
+  fetchUserInfo: () => Promise<DTO.UserDto | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
       const currentUser = await queryCurrent();
       return currentUser;
     } catch {
-      history.push('/user/login');
+      history.push(pagePath.login);
     }
     return undefined;
   };
   // If it is a login page, do not execute
-  if (history.location.pathname !== '/user/login') {
-    const currentUser = await fetchUserInfo();
+  if (history.location.pathname === pagePath.login)
     return {
       fetchUserInfo,
-      currentUser,
       settings: defaultSettings,
     };
-  }
+
+  const currentUser = await fetchUserInfo();
   return {
     fetchUserInfo,
+    currentUser,
     settings: defaultSettings,
   };
 }
@@ -40,7 +42,7 @@ export async function getInitialState(): Promise<{
 export const layout = ({
   initialState,
 }: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser };
+  initialState: { settings?: LayoutSettings; currentUser?: DTO.UserDto; accessToken?: string };
 }): BasicLayoutProps => {
   return {
     rightContentRender: () => <RightContent />,
@@ -50,9 +52,10 @@ export const layout = ({
       const { currentUser } = initialState;
       const { location } = history;
       // If not logged in, redirect to login
-      if (!currentUser?.userid && location.pathname !== '/user/login') {
-        history.push('/user/login');
+      if (!currentUser?.id && location.pathname !== pagePath.login) {
+        history.push(pagePath.login);
       }
+      localStorage.setItem('accessToken', initialState?.accessToken as string);
     },
     menuHeaderRender: undefined,
     ...initialState?.settings,

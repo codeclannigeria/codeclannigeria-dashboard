@@ -53,17 +53,18 @@ const GlobalHeaderRight: React.FC<{}> = () => {
         //   console.log('input', value);
         // }}
       />
-      <Tooltip title="Documentation">
+      {/* {// https://pro.ant.design/docs/getting-started} */}
+      <Tooltip title="About Us">
         <span
           className={styles.action}
           onClick={() => {
-            window.location.href = 'https://pro.ant.design/docs/getting-started';
+            window.location.href = 'https://www.codeclannigeria.dev/about';
           }}
         >
           <QuestionCircleOutlined />
         </span>
       </Tooltip>
-      <Avatar />
+      <Avatar menu />
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>

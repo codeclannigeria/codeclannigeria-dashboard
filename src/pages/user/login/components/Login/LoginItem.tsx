@@ -66,7 +66,7 @@ const LoginItems: Partial<LoginItemType> = {};
 Object.keys(ItemMap).forEach((key) => {
   const item = ItemMap[key];
   LoginItems[key] = (props: LoginItemProps) => (
-    <LoginItem customProps={item.props} rules={item.rules} {...props} {...item.props} />
+    <LoginItem customProps={item.props} rules={item.rules} {...props} />
   );
 });
 

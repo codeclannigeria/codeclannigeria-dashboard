@@ -1,6 +1,6 @@
 import logo from '@/assets/logo.svg';
 import Footer from '@/components/Footer';
-import { fakeAccountLogin, LoginParamsType } from '@/services/login';
+import { fakeAccountLogin } from '@/services/login';
 import { Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { History, history, Link, SelectLang, useModel } from 'umi';
@@ -30,17 +30,23 @@ const Login: React.FC<{}> = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [autoLogin, setAutoLogin] = useState(true);
 
-  const handleSubmit = async (values: LoginParamsType) => {
+  const handleSubmit = async (values: DTO.LoginReqDto) => {
     setSubmitting(true);
     try {
       // Log in
-      const msg = await fakeAccountLogin({ ...values });
-      if (msg.status === 'ok' && initialState) {
+      const { accessToken } = await fakeAccountLogin({ ...values });
+      if (!accessToken) {
+        message.error('Invalid login attempt');
+        setSubmitting(false);
+        return;
+      }
+      if (initialState) {
         message.success('Login successful!');
         const currentUser = await initialState?.fetchUserInfo();
         setInitialState({
           ...initialState,
           currentUser,
+          accessToken,
         });
         replaceGoto();
         return;
@@ -69,27 +75,8 @@ const Login: React.FC<{}> = () => {
 
         <div className={styles.main}>
           <LoginForm onSubmit={handleSubmit}>
-            <Email
-              name="email"
-              placeholder="Email"
-              rules={[
-                {
-                  type: 'email',
-                  required: true,
-                  message: 'Please enter your email!',
-                },
-              ]}
-            />
-            <Password
-              name="password"
-              placeholder="Password"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your password',
-                },
-              ]}
-            />
+            <Email name="email" />
+            <Password name="password" />
 
             <div>
               <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
@@ -103,7 +90,7 @@ const Login: React.FC<{}> = () => {
                 forgot password
               </a>
             </div>
-            <Submit loading={submitting}>log in</Submit>
+            <Submit loading={submitting}>Log In</Submit>
           </LoginForm>
         </div>
       </div>

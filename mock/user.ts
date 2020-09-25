@@ -18,7 +18,7 @@ const getAccess = () => access;
 // The code will be compatible with the local service mock and the static data of the deployment site
 export default {
   // Supports Object and Array values
-  'GET /api/currentUser': (req: Request, res: Response) => {
+  'GET /api/profile': (req: Request, res: Response) => {
     if (!getAccess()) {
       res.status(401).send({
         data: {
@@ -31,55 +31,50 @@ export default {
       return;
     }
     res.send({
-      name: 'Fortune Ochi',
-      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-      userid: '00000001',
-      email: 'antdesign@alipay.com',
-      signature: 'Be tolerant to diversity, tolerance is a virtue',
-      title: 'Interaction expert',
-      group: 'Ant Financial-XX Business Group-XX Platform Department-XX Technology Department-UED',
-      tags: [
+      role: 'ADMIN',
+      id: '5ee9ab7966f71c12871ec2d2',
+      updatedAt: '2020-09-23T23:22:46.712Z',
+      createdAt: '2020-06-17T05:32:24.092Z',
+      firstName: 'Fortune',
+      lastName: 'Ochi',
+      email: 'string@email.com',
+      description: 'Obsessed with quality!',
+      city: 'Toronto',
+      country: 'Canada',
+      gender: 'MALE',
+      dob: '2000-07-12T08:36:42.901Z',
+      phoneNumber: '08098877745',
+      technologies: ['JavaScript', 'Java', 'C#'],
+      photoUrl: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      notifyCount: 0,
+      notifUnreadCount: 0,
+      tracks: [
         {
-          key: '0',
-          label: 'Very Thoughtful',
+          id: '5ef1def71fd7f916461ef50f',
+          updatedAt: '2020-07-12T08:36:42.901Z',
+          createdAt: '2020-06-23T10:51:05.867Z',
+          title: 'MOBILE',
+          description: 'string',
+          thumbnailUrl:
+            'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         },
         {
-          key: '1',
-          label: 'Focus on design',
+          id: '5f0731042133ba68461a1396',
+          updatedAt: '2020-07-09T14:09:24.774Z',
+          createdAt: '2020-07-09T14:09:24.774Z',
+          title: 'TITLE',
+          description: '5',
+          thumbnailUrl: null,
         },
         {
-          key: '2',
-          label: 'No stress',
-        },
-        {
-          key: '3',
-          label: 'Long legs',
-        },
-        {
-          key: '4',
-          label: 'Chuan Meizi',
-        },
-        {
-          key: '5',
-          label: 'Inclusive of all rivers',
+          id: '5ef1dd2e55aeac14d64575dd',
+          updatedAt: '2020-07-12T08:31:31.435Z',
+          createdAt: '2020-06-23T10:44:52.851Z',
+          title: 'STRING',
+          description: 'string',
+          thumbnailUrl: null,
         },
       ],
-      notifyCount: 12,
-      unreadCount: 11,
-      country: 'China',
-      access: getAccess(),
-      geographic: {
-        province: {
-          label: 'Zhejiang Province',
-          key: '330000',
-        },
-        city: {
-          label: 'Hangzhou City',
-          key: '330100',
-        },
-      },
-      address: '77 Gongzhuan Road, Xihu District',
-      phone: '0752-268888888',
     });
   },
   // GET POST can be omitted
@@ -103,38 +98,26 @@ export default {
       address: 'Sidney No. 1 Lake Park',
     },
   ],
-  'POST /api/login/account': (req: Request, res: Response) => {
-    const { password, username, type } = req.body;
-    if (password === 'ant.design' && username === 'admin') {
+  'POST /api/auth/login': (req: Request, res: Response) => {
+    const { password, email } = req.body;
+    if (password === 'admin' && email === 'admin@email.com') {
       res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
+        accessToken: 'accessToken',
       });
       access = 'admin';
       return;
     }
-    if (password === 'ant.design' && username === 'user') {
+    if (password === 'mentor' && email === 'mentor@email.com') {
       res.send({
-        status: 'ok',
-        type,
+        accessToken: 'accessToken',
         currentAuthority: 'user',
       });
       access = 'user';
       return;
     }
-    if (type === 'mobile') {
-      res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
-      });
-      return;
-    }
 
     res.send({
       status: 'error',
-      type,
       currentAuthority: 'guest',
     });
     access = 'guest';

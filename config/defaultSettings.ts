@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'Code Clan Nigeria',
+  title: 'CodeClan',
   pwa: false,
   iconfontUrl: '',
 } as LayoutSettings & {

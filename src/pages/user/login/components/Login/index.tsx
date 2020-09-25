@@ -1,4 +1,3 @@
-import { LoginParamsType } from '@/services/login';
 import { Form } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import classNames from 'classnames';
@@ -10,7 +9,7 @@ import LoginSubmit from './LoginSubmit';
 
 export interface LoginProps {
   style?: React.CSSProperties;
-  onSubmit?: (values: LoginParamsType) => void;
+  onSubmit?: (values: DTO.LoginReqDto) => void;
   className?: string;
   form?: FormInstance;
 }
@@ -31,7 +30,7 @@ const Login: LoginType = (props) => {
         form={props.form || form}
         onFinish={(values) => {
           if (props.onSubmit) {
-            props.onSubmit(values as LoginParamsType);
+            props.onSubmit(values as DTO.LoginReqDto);
           }
         }}
       >

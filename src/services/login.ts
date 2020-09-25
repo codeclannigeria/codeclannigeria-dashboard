@@ -8,8 +8,8 @@ export interface LoginParamsType {
   type: string;
 }
 
-export async function fakeAccountLogin(params: LoginParamsType) {
-  return request<API.LoginStateType>('/api/login/account', {
+export async function fakeAccountLogin(params: DTO.LoginReqDto) {
+  return request<DTO.LoginResDto>('/api/auth/login', {
     method: 'POST',
     data: params,
   });

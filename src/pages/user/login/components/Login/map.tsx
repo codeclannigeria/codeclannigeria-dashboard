@@ -6,8 +6,7 @@ export default {
   Email: {
     props: {
       size: 'large',
-      id: 'email',
-      name: 'email',
+      placeholder: 'Enter your email',
       prefix: (
         <MailOutlined
           style={{
@@ -16,12 +15,15 @@ export default {
           className={styles.prefixIcon}
         />
       ),
-      placeholder: 'Enter your email',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter email!',
+        message: 'Email is required!',
+      },
+      {
+        type: 'email',
+        message: 'Invalid email!',
       },
     ],
   },
@@ -29,14 +31,13 @@ export default {
     props: {
       size: 'large',
       prefix: <LockTwoTone className={styles.prefixIcon} />,
-      type: 'password',
-      id: 'password',
       placeholder: 'Enter your password',
+      type: 'password',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter password!',
+        message: 'Password is required!',
       },
     ],
   },
