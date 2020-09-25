@@ -1,6 +1,6 @@
 import logo from '@/assets/logo.svg';
 import Footer from '@/components/Footer';
-import { fakeAccountLogin } from '@/services/login';
+import authService from '@/services/auth.service';
 import { Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { History, history, Link, SelectLang, useModel } from 'umi';
@@ -30,11 +30,11 @@ const Login: React.FC<{}> = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [autoLogin, setAutoLogin] = useState(true);
 
-  const handleSubmit = async (values: DTO.LoginReqDto) => {
+  const handleSubmit = async (values: API.LoginReqDto) => {
     setSubmitting(true);
     try {
       // Log in
-      const { accessToken } = await fakeAccountLogin({ ...values });
+      const { accessToken } = await authService.login(values);
       if (!accessToken) {
         message.error('Invalid login attempt');
         setSubmitting(false);

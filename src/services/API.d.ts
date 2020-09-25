@@ -32,4 +32,10 @@ declare namespace API {
     extra: any;
     status: string;
   }
+
+  export type QueryParams = Paths.BaseFindAll.QueryParameters;
+  export interface PagedList<T> {
+    totalCount: number;
+    items: T[];
+  }
 }

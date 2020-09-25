@@ -4,11 +4,7 @@
       "map": [
         {
           "from": ["Components", true],
-          "to": ["DTO"]
-        },
-        {
-          "from": [],
-          "to": []
+          "to": ["API"]
         }
       ]
     }

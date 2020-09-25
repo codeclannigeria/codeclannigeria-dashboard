@@ -9,7 +9,7 @@ import LoginSubmit from './LoginSubmit';
 
 export interface LoginProps {
   style?: React.CSSProperties;
-  onSubmit?: (values: DTO.LoginReqDto) => void;
+  onSubmit?: (values: API.LoginReqDto) => void;
   className?: string;
   form?: FormInstance;
 }
@@ -30,7 +30,7 @@ const Login: LoginType = (props) => {
         form={props.form || form}
         onFinish={(values) => {
           if (props.onSubmit) {
-            props.onSubmit(values as DTO.LoginReqDto);
+            props.onSubmit(values as API.LoginReqDto);
           }
         }}
       >

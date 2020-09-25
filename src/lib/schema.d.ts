@@ -1,4 +1,4 @@
-declare namespace DTO {
+declare namespace API {
     export interface AcctVerifyDto {
         clientBaseUrl: string;
         tokenParamName: string;
@@ -250,42 +250,42 @@ declare namespace Paths {
         }
     }
     namespace AuthControllerLogin {
-        export type RequestBody = DTO.LoginReqDto;
+        export type RequestBody = API.LoginReqDto;
         namespace Responses {
-            export type $200 = DTO.LoginResDto;
-            export type $401 = DTO.ApiException;
+            export type $200 = API.LoginResDto;
+            export type $401 = API.ApiException;
         }
     }
     namespace AuthControllerRegister {
-        export type RequestBody = DTO.RegisterUserDto;
+        export type RequestBody = API.RegisterUserDto;
         namespace Responses {
-            export type $201 = DTO.RegisterUserResDto;
-            export type $409 = DTO.ApiException;
+            export type $201 = API.RegisterUserResDto;
+            export type $409 = API.ApiException;
         }
     }
     namespace AuthControllerResetPassword {
-        export type RequestBody = DTO.ResetPassInput;
+        export type RequestBody = API.ResetPassInput;
         namespace Responses {
             export interface $200 {
             }
         }
     }
     namespace AuthControllerSendEmailVerifyToken {
-        export type RequestBody = DTO.AcctVerifyDto;
+        export type RequestBody = API.AcctVerifyDto;
         namespace Responses {
             export interface $200 {
             }
         }
     }
     namespace AuthControllerSendForgotPwToken {
-        export type RequestBody = DTO.AcctVerifyDto;
+        export type RequestBody = API.AcctVerifyDto;
         namespace Responses {
             export interface $200 {
             }
         }
     }
     namespace AuthControllerVerifyEmailToken {
-        export type RequestBody = DTO.ValidateTokenInput;
+        export type RequestBody = API.ValidateTokenInput;
         namespace Responses {
             export interface $200 {
             }
@@ -317,7 +317,7 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedUserOutputDto;
+            export type $200 = API.PagedUserOutputDto;
         }
     }
     namespace BaseFindById {
@@ -328,8 +328,8 @@ declare namespace Paths {
             id: Parameters.Id;
         }
         namespace Responses {
-            export type $200 = DTO.UserDto;
-            export type $404 = DTO.ApiException;
+            export type $200 = API.UserDto;
+            export type $404 = API.ApiException;
         }
     }
     namespace BaseUpdate {
@@ -339,27 +339,27 @@ declare namespace Paths {
         export interface PathParameters {
             id: Parameters.Id;
         }
-        export type RequestBody = DTO.CreateUserDto;
+        export type RequestBody = API.CreateUserDto;
         namespace Responses {
-            export type $200 = DTO.UserDto;
-            export type $400 = DTO.ApiException;
-            export type $404 = DTO.ApiException;
+            export type $200 = API.UserDto;
+            export type $400 = API.ApiException;
+            export type $404 = API.ApiException;
         }
     }
     namespace CategoriesControllerCreate {
-        export type RequestBody = DTO.CreateCategoryDto;
+        export type RequestBody = API.CreateCategoryDto;
         namespace Responses {
-            export type $201 = DTO.CategoryDto;
-            export type $400 = DTO.ApiException;
-            export type $403 = DTO.ApiException;
+            export type $201 = API.CategoryDto;
+            export type $400 = API.ApiException;
+            export type $403 = API.ApiException;
         }
     }
     namespace CoursesControllerCreate {
-        export type RequestBody = DTO.CreateCourseDto;
+        export type RequestBody = API.CreateCourseDto;
         namespace Responses {
-            export type $201 = DTO.CourseDto;
-            export type $400 = DTO.ApiException;
-            export type $403 = DTO.ApiException;
+            export type $201 = API.CourseDto;
+            export type $400 = API.ApiException;
+            export type $403 = API.ApiException;
         }
     }
     namespace MentorControllerGetSubmissions {
@@ -376,8 +376,8 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedListSubmissionDto;
-            export type $400 = DTO.ApiException;
+            export type $200 = API.PagedListSubmissionDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace MentorControllerGradeTask {
@@ -387,11 +387,11 @@ declare namespace Paths {
         export interface PathParameters {
             submissionId: Parameters.SubmissionId;
         }
-        export type RequestBody = DTO.GradeSubmissionDto;
+        export type RequestBody = API.GradeSubmissionDto;
         namespace Responses {
             export interface $200 {
             }
-            export type $400 = DTO.ApiException;
+            export type $400 = API.ApiException;
         }
     }
     namespace ProfileControllerGetMentees {
@@ -408,7 +408,7 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedUserOutputDto;
+            export type $200 = API.PagedUserOutputDto;
         }
     }
     namespace ProfileControllerGetMentors {
@@ -425,31 +425,31 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedUserOutputDto;
+            export type $200 = API.PagedUserOutputDto;
         }
     }
     namespace ProfileControllerGetProfile {
         namespace Responses {
-            export type $200 = DTO.UserDto;
+            export type $200 = API.UserDto;
         }
     }
     namespace ProfileControllerUpdateProfile {
-        export type RequestBody = DTO.UpdateProfileDto;
+        export type RequestBody = API.UpdateProfileDto;
         namespace Responses {
-            export type $200 = DTO.UserDto;
+            export type $200 = API.UserDto;
         }
     }
     namespace ProfileControllerUploadFile {
         namespace Responses {
-            export type $200 = DTO.UserDto;
+            export type $200 = API.UserDto;
         }
     }
     namespace StagesControllerCreate {
-        export type RequestBody = DTO.CreateStageDto;
+        export type RequestBody = API.CreateStageDto;
         namespace Responses {
-            export type $201 = DTO.StageDto;
-            export type $400 = DTO.ApiException;
-            export type $403 = DTO.ApiException;
+            export type $201 = API.StageDto;
+            export type $400 = API.ApiException;
+            export type $403 = API.ApiException;
         }
     }
     namespace StagesControllerGetStages {
@@ -470,15 +470,15 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedListTaskDto;
-            export type $400 = DTO.ApiException;
+            export type $200 = API.PagedListTaskDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace TasksControllerCreate {
-        export type RequestBody = DTO.CreateTaskDto;
+        export type RequestBody = API.CreateTaskDto;
         namespace Responses {
-            export type $201 = DTO.TaskDto;
-            export type $400 = DTO.ApiException;
+            export type $201 = API.TaskDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace TasksControllerGetMentors {
@@ -489,8 +489,8 @@ declare namespace Paths {
             taskId: Parameters.TaskId;
         }
         namespace Responses {
-            export type $200 = DTO.PagedListSubmissionDto;
-            export type $400 = DTO.ApiException;
+            export type $200 = API.PagedListSubmissionDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace TasksControllerSubmitTask {
@@ -500,18 +500,18 @@ declare namespace Paths {
         export interface PathParameters {
             taskId: Parameters.TaskId;
         }
-        export type RequestBody = DTO.CreateSubmissionDto;
+        export type RequestBody = API.CreateSubmissionDto;
         namespace Responses {
-            export type $201 = DTO.SubmissionDto;
-            export type $400 = DTO.ApiException;
-            export type Undefined = DTO.SubmissionDto;
+            export type $201 = API.SubmissionDto;
+            export type $400 = API.ApiException;
+            export type Undefined = API.SubmissionDto;
         }
     }
     namespace TracksControllerCreate {
-        export type RequestBody = DTO.CreateTrackDto;
+        export type RequestBody = API.CreateTrackDto;
         namespace Responses {
-            export type $201 = DTO.TrackDto;
-            export type $400 = DTO.ApiException;
+            export type $201 = API.TrackDto;
+            export type $400 = API.ApiException;
             export interface $403 {
             }
         }
@@ -523,17 +523,17 @@ declare namespace Paths {
         export interface PathParameters {
             trackId: Parameters.TrackId;
         }
-        export type RequestBody = DTO.MentorInput;
+        export type RequestBody = API.MentorInput;
         namespace Responses {
             export interface $200 {
             }
-            export type $400 = DTO.ApiException;
+            export type $400 = API.ApiException;
         }
     }
     namespace TracksControllerCreateTrack {
         namespace Responses {
-            export type $201 = DTO.TrackDto;
-            export type $403 = DTO.ApiException;
+            export type $201 = API.TrackDto;
+            export type $403 = API.ApiException;
         }
     }
     namespace TracksControllerEnroll {
@@ -543,11 +543,11 @@ declare namespace Paths {
         export interface PathParameters {
             trackId: Parameters.TrackId;
         }
-        export type RequestBody = DTO.MentorInput;
+        export type RequestBody = API.MentorInput;
         namespace Responses {
             export interface $200 {
             }
-            export type $400 = DTO.ApiException;
+            export type $400 = API.ApiException;
         }
     }
     namespace TracksControllerGetMentors {
@@ -558,8 +558,8 @@ declare namespace Paths {
             trackId: Parameters.TrackId;
         }
         namespace Responses {
-            export type $200 = DTO.PagedUserOutputDto;
-            export type $400 = DTO.ApiException;
+            export type $200 = API.PagedUserOutputDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace TracksControllerGetMyStages {
@@ -580,7 +580,7 @@ declare namespace Paths {
             opts?: Parameters.Opts;
         }
         namespace Responses {
-            export type $200 = DTO.PagedUserStageDto;
+            export type $200 = API.PagedUserStageDto;
         }
     }
     namespace TracksControllerGetStages {
@@ -591,16 +591,16 @@ declare namespace Paths {
             trackId: Parameters.TrackId;
         }
         namespace Responses {
-            export type $200 = DTO.PagedListStageDto;
-            export type $400 = DTO.ApiException;
+            export type $200 = API.PagedListStageDto;
+            export type $400 = API.ApiException;
         }
     }
     namespace UsersControllerCreate {
-        export type RequestBody = DTO.CreateUserDto;
+        export type RequestBody = API.CreateUserDto;
         namespace Responses {
-            export type $201 = DTO.UserDto;
-            export type $400 = DTO.ApiException;
-            export type $403 = DTO.ApiException;
+            export type $201 = API.UserDto;
+            export type $400 = API.ApiException;
+            export type $403 = API.ApiException;
         }
     }
 }
