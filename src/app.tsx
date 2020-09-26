@@ -8,12 +8,12 @@ import { ResponseError } from 'umi-request';
 
 import defaultSettings from '../config/defaultSettings';
 import { pagePath } from './routes';
+import localStoreService from './services/local-store.service';
 import userService from './services/user.service';
 
 export async function getInitialState(): Promise<{
   settings?: LayoutSettings;
   currentUser?: API.UserDto;
-  accessToken?: string;
   fetchUserInfo: () => Promise<API.UserDto | undefined>;
 }> {
   const fetchUserInfo = async () => {
@@ -43,7 +43,7 @@ export async function getInitialState(): Promise<{
 export const layout = ({
   initialState,
 }: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.UserDto; accessToken?: string };
+  initialState: { settings?: LayoutSettings; currentUser?: API.UserDto };
 }): BasicLayoutProps => {
   return {
     rightContentRender: () => <RightContent />,
@@ -56,7 +56,6 @@ export const layout = ({
       if (!currentUser?.id && location.pathname !== pagePath.login) {
         history.push(pagePath.login);
       }
-      localStorage.setItem('accessToken', initialState?.accessToken as string);
     },
     menuHeaderRender: undefined,
     ...initialState?.settings,
@@ -72,8 +71,8 @@ const errorHandler = (error: ResponseError) => {
 
   if (response && response.status) {
     const errorText = apiError.message || response.statusText;
-
-    notification[response.status < 500 ? 'warning' : 'error']({
+    const notifType = response.status < 500 ? 'warning' : 'error';
+    notification[notifType]({
       message: apiError.error || 'Error',
       description: errorText,
     });
@@ -91,3 +90,5 @@ const errorHandler = (error: ResponseError) => {
 export const request: RequestConfig = {
   errorHandler,
 };
+const authToken = localStoreService.getAuthToken();
+if (authToken) request.headers = { Authorization: `Bearer ${authToken}` };

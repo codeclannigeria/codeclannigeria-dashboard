@@ -1,6 +1,7 @@
 import logo from '@/assets/logo.svg';
 import Footer from '@/components/Footer';
 import authService from '@/services/auth.service';
+import localStoreService from '@/services/local-store.service';
 import { Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { History, history, Link, SelectLang, useModel } from 'umi';
@@ -33,7 +34,6 @@ const Login: React.FC<{}> = () => {
   const handleSubmit = async (values: API.LoginReqDto) => {
     setSubmitting(true);
     try {
-      // Log in
       const { accessToken } = await authService.login(values);
       if (!accessToken) {
         message.error('Invalid login attempt');
@@ -42,19 +42,19 @@ const Login: React.FC<{}> = () => {
       }
       if (initialState) {
         message.success('Login successful!');
+        localStoreService.saveAuthToken(accessToken);
         const currentUser = await initialState?.fetchUserInfo();
         setInitialState({
           ...initialState,
           currentUser,
-          accessToken,
         });
+        setSubmitting(false);
         replaceGoto();
-        return;
       }
     } catch (error) {
+      setSubmitting(false);
       message.error('Login failed, please try again');
     }
-    setSubmitting(false);
   };
 
   return (

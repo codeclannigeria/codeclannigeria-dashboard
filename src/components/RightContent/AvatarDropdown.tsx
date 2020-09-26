@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react';
+import { pagePath } from '@/routes';
+import authService from '@/services/auth.service';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { history, useModel } from 'umi';
-import { outLogin } from '@/services/login';
 import { stringify } from 'querystring';
+import React, { useCallback } from 'react';
+import { history, useModel } from 'umi';
+
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -14,14 +16,14 @@ export interface GlobalHeaderRightProps {
 /**
  * Log out and save the current url
  */
-const loginOut = async () => {
-  await outLogin();
+const logout = async () => {
+  authService.logout();
   const { query, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
-  if (window.location.pathname !== '/user/login' && !redirect) {
+  if (window.location.pathname !== pagePath.login && !redirect) {
     history.replace({
-      pathname: '/user/login',
+      pathname: pagePath.login,
       search: stringify({
         redirect: pathname,
       }),
@@ -42,7 +44,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       const { key } = event;
       if (key === 'logout' && initialState) {
         setInitialState({ ...initialState, currentUser: undefined });
-        loginOut();
+        logout();
         return;
       }
       history.push(`/account/${key}`);

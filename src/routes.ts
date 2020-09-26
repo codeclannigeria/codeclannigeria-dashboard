@@ -1,3 +1,3 @@
 export const pagePath = {
-  login: '/user/login',
+  login: '/auth/login',
 };
