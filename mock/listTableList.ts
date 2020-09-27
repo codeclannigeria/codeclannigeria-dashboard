@@ -1,8 +1,9 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 import { parse } from 'url';
-import { TableListItem, TableListParams } from '@/pages/ListTableList/data';
 
+import { TableListItem, TableListParams } from '../src/pages/ListTableList/tbl.schema';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
   const tableListDataSource: TableListItem[] = [];
@@ -18,8 +19,8 @@ const genList = (current: number, pageSize: number) => {
         'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
       ][i % 2],
       name: `TradeCode ${index}`,
-      owner: '曲丽丽',
-      desc: '这是一段描述',
+      owner: 'Fortune',
+      desc: 'Nice guy',
       callNo: Math.floor(Math.random() * 1000),
       status: Math.floor(Math.random() * 10) % 4,
       updatedAt: new Date(),
@@ -94,7 +95,7 @@ function getRule(req: Request, res: Response, u: string) {
     total: tableListDataSource.length,
     success: true,
     pageSize,
-    current: parseInt(`${params.currentPage}`, 10) || 1,
+    current: +params.currentPage || 1,
   };
 
   return res.json(result);

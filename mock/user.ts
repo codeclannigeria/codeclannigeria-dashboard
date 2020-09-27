@@ -100,11 +100,11 @@ export default {
   ],
   'POST /api/auth/login': (req: Request, res: Response) => {
     const { password, email } = req.body;
-    if (password === 'admin' && email === 'admin@email.com') {
+    if (password === 'string' && email === 'string@email.com') {
       res.send({
         accessToken: 'accessToken',
       });
-      access = 'admin';
+      access = 'ADMIN';
       return;
     }
     if (password === 'mentor' && email === 'mentor@email.com') {

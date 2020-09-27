@@ -33,7 +33,9 @@ declare namespace API {
     status: string;
   }
 
-  export type QueryParams = Paths.BaseFindAll.QueryParameters;
+  export interface QueryParams extends Paths.BaseFindAll.QueryParameters {
+    search?: { [key: string] };
+  }
   export interface PagedList<T> {
     totalCount: number;
     items: T[];
