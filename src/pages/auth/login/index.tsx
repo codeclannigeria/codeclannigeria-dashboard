@@ -2,7 +2,6 @@ import logo from '@/assets/logo.svg';
 import Footer from '@/components/Footer';
 import authService from '@/services/auth.service';
 import localStoreService from '@/services/local-store.service';
-import userService from '@/services/user.service';
 import { Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { History, history, Link, SelectLang, useModel } from 'umi';

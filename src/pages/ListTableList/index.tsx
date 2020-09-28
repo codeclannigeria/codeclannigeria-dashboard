@@ -1,13 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message, Input, Drawer } from 'antd';
-import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { Button, Divider, Drawer, Input, message } from 'antd';
+import React, { useRef, useState } from 'react';
+
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
+import { addRule, queryRule, removeRule, updateRule } from './service';
 import { TableListItem } from './tbl.schema';
-import { queryRule, updateRule, addRule, removeRule } from './service';
 
 /**
  * Add node
@@ -32,7 +33,7 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Updating...');
   try {
     await updateRule({
       name: fields.name,
@@ -41,7 +42,7 @@ const handleUpdate = async (fields: FormValueType) => {
     });
     hide();
 
-    message.success('Successful');
+    message.success('Updated successfully');
     return true;
   } catch (error) {
     hide();
@@ -80,6 +81,11 @@ const TableList: React.FC<{}> = () => {
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const columns: ProColumns<TableListItem>[] = [
     {
+      dataIndex: 'avatar',
+      valueType: 'avatar',
+      hideInForm: true,
+    },
+    {
       title: 'Rule name',
       dataIndex: 'name',
       tip: 'Rule name is the unique key',
@@ -101,16 +107,17 @@ const TableList: React.FC<{}> = () => {
       valueType: 'textarea',
     },
     {
-      title: 'Number of service calls',
+      title: 'Service calls no.',
       dataIndex: 'callNo',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) => `${val} 万`,
+      renderText: (val: string) => `${val} ten thousand`,
     },
     {
       title: 'Status',
       dataIndex: 'status',
       hideInForm: true,
+      sorter: true,
       valueEnum: {
         0: { text: 'Offline', status: 'Default' },
         1: { text: 'Running', status: 'Processing' },
@@ -136,7 +143,7 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
-      title: 'Operating',
+      title: 'Actions',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
@@ -147,7 +154,7 @@ const TableList: React.FC<{}> = () => {
               setStepFormValues(record);
             }}
           >
-            Configuration
+            Edit
           </a>
           <Divider type="vertical" />
           <a href="">Subscribe to alerts</a>
@@ -180,10 +187,10 @@ const TableList: React.FC<{}> = () => {
         <FooterToolbar
           extra={
             <div>
-              chosen <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              chosen <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> items&nbsp;&nbsp;
               <span>
                 Total number of service calls{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
+                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} ten thousand
               </span>
             </div>
           }
@@ -195,9 +202,9 @@ const TableList: React.FC<{}> = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            Batch deletion
+            Delete selected
           </Button>
-          <Button type="primary">Batch approval</Button>
+          <Button type="primary">Approve selected</Button>
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>

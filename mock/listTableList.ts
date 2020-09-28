@@ -126,7 +126,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
             'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
           ][i % 2],
           name,
-          owner: '曲丽丽',
+          owner: 'Fortune',
           desc,
           callNo: Math.floor(Math.random() * 1000),
           status: Math.floor(Math.random() * 10) % 2,

@@ -85,6 +85,9 @@ declare namespace API {
         title: string;
         description: string;
     }
+    export interface DeleteManyType {
+        ids: string[];
+    }
     export interface GradeSubmissionDto {
         gradePercentage: number;
         mentorComment?: string;
@@ -131,6 +134,11 @@ declare namespace API {
         items: UserStageDto[];
         totalCount: number;
     }
+    export interface ReassignMenteeInput {
+        menteeId: string;
+        fromMentorId: string;
+        toMentorId: string;
+    }
     export interface RegisterUserDto {
         password: string;
         firstName: string;
@@ -144,6 +152,15 @@ declare namespace API {
         token: string;
         email: string;
         newPassword: string;
+    }
+    export interface SimpleTaskDto {
+        title: string;
+        id: string;
+    }
+    export interface SimpleUserDto {
+        firstName: string;
+        lastName: string;
+        id: string;
     }
     export interface StageDto {
         updatedAt: string; // date-time
@@ -169,6 +186,9 @@ declare namespace API {
         mentorComment?: string;
         taskUrl: string;
         gradePercentage: number;
+        mentor: SimpleUserDto;
+        mentee: SimpleUserDto;
+        task: SimpleTaskDto;
         id: string;
     }
     export interface TaskDto {
@@ -294,10 +314,21 @@ declare namespace Paths {
     namespace BaseDelete {
         namespace Parameters {
             export type Id = string;
+            export type IsHardDelete = boolean;
         }
         export interface PathParameters {
             id: Parameters.Id;
         }
+        export interface QueryParameters {
+            isHardDelete: Parameters.IsHardDelete;
+        }
+        namespace Responses {
+            export interface $200 {
+            }
+        }
+    }
+    namespace BaseDeleteMany {
+        export type RequestBody = API.DeleteManyType;
         namespace Responses {
             export interface $200 {
             }
@@ -481,7 +512,7 @@ declare namespace Paths {
             export type $400 = API.ApiException;
         }
     }
-    namespace TasksControllerGetMentors {
+    namespace TasksControllerGetSubmissions {
         namespace Parameters {
             export type TaskId = string;
         }
@@ -592,6 +623,20 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = API.PagedListStageDto;
+            export type $400 = API.ApiException;
+        }
+    }
+    namespace TracksControllerReassignMentee {
+        namespace Parameters {
+            export type TrackId = string;
+        }
+        export interface PathParameters {
+            trackId: Parameters.TrackId;
+        }
+        export type RequestBody = API.ReassignMenteeInput;
+        namespace Responses {
+            export interface $200 {
+            }
             export type $400 = API.ApiException;
         }
     }
