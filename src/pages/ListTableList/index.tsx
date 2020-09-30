@@ -7,14 +7,13 @@ import React, { useRef, useState } from 'react';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { addRule, queryRule, removeRule, updateRule } from './service';
-import { TableListItem } from './tbl.schema';
+import { addRule, queryRule, removeRule, updateUser } from './service';
 
 /**
  * Add node
  * @param fields
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (fields: API.CreateUserDto) => {
   const hide = message.loading('Adding');
   try {
     await addRule({ ...fields });
@@ -35,11 +34,7 @@ const handleAdd = async (fields: TableListItem) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Updating...');
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await updateUser({ ...fields });
     hide();
 
     message.success('Updated successfully');
@@ -55,12 +50,12 @@ const handleUpdate = async (fields: FormValueType) => {
  *  Delete node
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
+const handleRemove = async (selectedRows: API.UserDto[]) => {
   const hide = message.loading('Deleting');
   if (!selectedRows) return true;
   try {
     await removeRule({
-      key: selectedRows.map((row) => row.key),
+      key: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('Deleted successfully and will refresh soon');
@@ -77,23 +72,23 @@ const TableList: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-  const columns: ProColumns<TableListItem>[] = [
+  const [row, setRow] = useState<API.UserDto>();
+  const [selectedRowsState, setSelectedRows] = useState<API.UserDto[]>([]);
+  const columns: ProColumns<API.UserDto>[] = [
     {
-      dataIndex: 'avatar',
+      dataIndex: 'photoUrl',
       valueType: 'avatar',
       hideInForm: true,
     },
     {
-      title: 'Rule name',
-      dataIndex: 'name',
-      tip: 'Rule name is the unique key',
+      title: 'Name',
+      dataIndex: 'firstName',
+      sorter: true,
       formItemProps: {
         rules: [
           {
             required: true,
-            message: 'Rule name is required',
+            message: 'First name is required',
           },
         ],
       },
@@ -102,33 +97,71 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
-      title: 'Description',
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: 'Service calls no.',
-      dataIndex: 'callNo',
+      title: 'Surname',
+      dataIndex: 'lastName',
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val} ten thousand`,
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      hideInForm: true,
-      sorter: true,
-      valueEnum: {
-        0: { text: 'Offline', status: 'Default' },
-        1: { text: 'Running', status: 'Processing' },
-        2: { text: 'Online', status: 'Success' },
-        3: { text: 'Abnormal', status: 'Error' },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: 'Last name is required',
+          },
+        ],
       },
     },
     {
-      title: 'Last schedule time',
+      title: 'Email',
+      dataIndex: 'email',
+      formItemProps: {
+        rules: [
+          {
+            type: 'email',
+            message: 'Invalid email',
+          },
+          {
+            required: true,
+            message: 'Email is required',
+          },
+        ],
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      valueType: 'textarea',
+      formItemProps: {
+        rules: [{ max: 250, whitespace: true }],
+      },
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phoneNumber',
+      formItemProps: {
+        rules: [
+          { type: 'regexp', message: 'Phone number is invalid, e.g +2347078455687' },
+          {
+            required: true,
+            message: 'Phone number is required',
+          },
+        ],
+      },
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      sorter: true,
+      valueEnum: {
+        0: { text: 'Admin', role: 'ADMIN' },
+        1: { text: 'Mentor', role: 'MENTOR' },
+        2: { text: 'Mentee', role: 'MENTEE' },
+      },
+    },
+    {
+      title: 'Updated',
       dataIndex: 'updatedAt',
       sorter: true,
+      defaultSortOrder: 'ascend',
+      // tip: "When user's details was updated",
       valueType: 'dateTime',
       hideInForm: true,
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
@@ -165,10 +198,10 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
-        headerTitle="Enquiry Form"
+      <ProTable<API.UserDto>
+        headerTitle="Users Form"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}
@@ -177,7 +210,21 @@ const TableList: React.FC<{}> = () => {
             <PlusOutlined /> New
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={async (params, sorter, filter) => {
+          const result = await queryRule({
+            limit: params.pageSize,
+            skip: params.current && params.current - 1,
+            search: { ...filter },
+            opts: { sort: { ...sorter } },
+          });
+          return {
+            data: result.items,
+            total: result.totalCount,
+            success: true,
+            pageSize: params.pageSize,
+            current: params.current,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -190,7 +237,7 @@ const TableList: React.FC<{}> = () => {
               chosen <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> items&nbsp;&nbsp;
               <span>
                 Total number of service calls{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} ten thousand
+                {selectedRowsState.reduce((pre, item) => pre + item.tracks.length, 0)} ten thousand
               </span>
             </div>
           }
@@ -208,7 +255,7 @@ const TableList: React.FC<{}> = () => {
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
+        <ProTable<API.UserDto, API.UserDto>
           onSubmit={async (value) => {
             const success = await handleAdd(value);
             if (success) {
@@ -218,7 +265,7 @@ const TableList: React.FC<{}> = () => {
               }
             }
           }}
-          rowKey="key"
+          rowKey="id"
           type="form"
           columns={columns}
         />
@@ -250,17 +297,16 @@ const TableList: React.FC<{}> = () => {
         onClose={() => {
           setRow(undefined);
         }}
-        closable={false}
       >
-        {row?.name && (
-          <ProDescriptions<TableListItem>
+        {row?.id && (
+          <ProDescriptions<API.UserDto>
             column={2}
-            title={row?.name}
+            title={`${row.firstName} ${row.lastName}`}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.name,
+              id: row?.id,
             }}
             columns={columns}
           />

@@ -70,12 +70,24 @@ const errorHandler = (error: ResponseError) => {
   const apiError = data as API.ApiException;
 
   if (response && response.status) {
-    const errorText = apiError.message || response.statusText;
+    let errorText = apiError.message || response.statusText;
     const notifType = response.status < 500 ? 'warning' : 'error';
-    notification[notifType]({
-      message: apiError.error || 'Error',
-      description: errorText,
-    });
+
+    if (Array.isArray(errorText)) errorText = errorText.join(', ');
+
+    if (response.status === 401)
+      history.push(pagePath.login).then(() => {
+        notification[notifType]({
+          message: apiError.error || 'Error',
+          description: errorText,
+        });
+      });
+    else {
+      notification[notifType]({
+        message: apiError.error || 'Error',
+        description: errorText,
+      });
+    }
   }
 
   if (!response) {

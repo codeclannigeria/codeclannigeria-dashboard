@@ -1,14 +1,13 @@
 import { request } from 'umi';
-import { TableListParams, TableListItem } from './tbl.schema';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/rule', {
+export async function queryRule(params?: API.QueryParams) {
+  return request<API.PagedList<API.UserDto>>('/api/users', {
     params,
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
+export async function removeRule(params: { key: string[] }) {
+  return request('/api/users', {
     method: 'POST',
     data: {
       ...params,
@@ -17,8 +16,8 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
-  return request('/api/rule', {
+export async function addRule(params: API.CreateUserDto) {
+  return request('/api/users', {
     method: 'POST',
     data: {
       ...params,
@@ -27,12 +26,9 @@ export async function addRule(params: TableListItem) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
+export async function updateUser(params: Partial<API.UserDto>) {
+  return request(`/api/users/${params.id}`, {
+    method: 'PUT',
+    data: params,
   });
 }

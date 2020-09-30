@@ -1,9 +1,10 @@
+import { Button, DatePicker, Form, Input, Modal, Select, Steps } from 'antd';
+import moment, { Moment } from 'moment';
 import React, { useState } from 'react';
-import { Form, Button, DatePicker, Input, Modal, Radio, Select, Steps } from 'antd';
 
-import { TableListItem } from '../tbl.schema';
+import SkillTags from './SkillTags';
 
-export interface FormValueType extends Partial<TableListItem> {
+export interface FormValueType extends Partial<API.UserDto> {
   target?: string;
   template?: string;
   type?: string;
@@ -15,13 +16,12 @@ export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => void;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<API.UserDto>;
 }
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
 
 export interface UpdateFormState {
   formVals: FormValueType;
@@ -34,17 +34,8 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const [formVals, setFormVals] = useState<FormValueType>({
-    name: props.values.name,
-    desc: props.values.desc,
-    key: props.values.key,
-    target: '0',
-    template: '0',
-    type: '1',
-    time: '',
-    frequency: 'month',
-  });
-
+  const [formVals, setFormVals] = useState<FormValueType>({ ...props.values });
+  const [techs, setTechs] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   const [form] = Form.useForm();
@@ -62,7 +53,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleNext = async () => {
     const fieldsValue = await form.validateFields();
-
+    fieldsValue.technologies = techs.length > 0 ? techs : null;
+    const dob = fieldsValue.dob && ((fieldsValue.dob as unknown) as Moment);
+    fieldsValue.dob = dob && dob.toISOString();
     setFormVals({ ...formVals, ...fieldsValue });
 
     if (currentStep < 2) {
@@ -76,23 +69,33 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     if (currentStep === 1) {
       return (
         <>
-          <FormItem name="target" label="Monitoring object">
-            <Select style={{ width: '100%' }}>
-              <Option value="0">Table I</Option>
-              <Option value="1">Table II</Option>
+          <FormItem name="role" label="User role">
+            <Select style={{ width: '100%' }} placeholder="-Select role-">
+              <Option value="ADMIN">Admin</Option>
+              <Option value="MENTOR">Mentor</Option>
+              <Option value="MENTEE">Mentee</Option>
             </Select>
           </FormItem>
-          <FormItem name="template" label="Rule template">
-            <Select style={{ width: '100%' }}>
-              <Option value="0">Rule template one</Option>
-              <Option value="1">Rule template two</Option>
+          <FormItem name="gender" label="Gender">
+            <Select style={{ width: '100%' }} placeholder="-Select gender-">
+              <Option value="MALE">Male</Option>
+              <Option value="FEMALE">Female</Option>
+              <Option value="UNSPECIFIED">Unspecified</Option>
             </Select>
           </FormItem>
-          <FormItem name="type" label="Rule type">
-            <RadioGroup>
-              <Radio value="0">Strong</Radio>
-              <Radio value="1">Weak</Radio>
-            </RadioGroup>
+          <FormItem name="country" label="Country">
+            <Select style={{ width: '100%' }} placeholder="-Select country-">
+              <Option value="Nigeria">Nigeria</Option>
+              <Option value="Canada">Canada</Option>
+              <Option value="USA">USA</Option>
+            </Select>
+          </FormItem>
+          <FormItem name="city" label="City">
+            <Select style={{ width: '100%' }} placeholder="-Select city-">
+              <Option value="Lagos">Lagos</Option>
+              <Option value="Ontario">Ontario</Option>
+              <Option value="Texas">Texas</Option>
+            </Select>
           </FormItem>
         </>
       );
@@ -100,48 +103,46 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     if (currentStep === 2) {
       return (
         <>
-          <FormItem
-            name="time"
-            label="Starting time"
-            rules={[{ required: true, message: 'Please choose a start time!' }]}
-          >
+          <FormItem name="dob" label="Birthday" rules={[{ required: true }]}>
             <DatePicker
               style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="Choose start time"
+              format="YYYY-MM-DD"
+              placeholder="Date of Birth"
+              showToday={false}
             />
           </FormItem>
-          <FormItem name="frequency" label="Scheduling period">
-            <Select style={{ width: '100%' }}>
-              <Option value="month">month</Option>
-              <Option value="week">week</Option>
-            </Select>
+          <FormItem name="phoneNumber" label="Phone number" rules={[{ required: true }]}>
+            <Input placeholder="Phone number" />
+          </FormItem>
+          <FormItem name="technologies" label="Skills">
+            <SkillTags technologies={values.technologies || []} onTechsSet={setTechs} />
           </FormItem>
         </>
       );
     }
     return (
       <>
-        <FormItem
-          name="name"
-          label="Rule name"
-          rules={[{ required: true, message: 'Please enter the rule name!' }]}
-        >
-          <Input placeholder="please enter" />
+        <FormItem name="firstName" label="First Name" rules={[{ required: true }]}>
+          <Input placeholder="First name" />
+        </FormItem>
+        <FormItem name="lastName" label="Surname" rules={[{ required: true }]}>
+          <Input placeholder="Last name" />
+        </FormItem>
+        <FormItem name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
+          <Input placeholder="Email" />
         </FormItem>
         <FormItem
-          name="desc"
-          label="Rule description"
+          name="description"
+          label="Description"
           rules={[
             {
               required: true,
-              message: 'Please enter a rule description of at least five characters!',
-              min: 5,
+              whitespace: true,
+              max: 150,
             },
           ]}
         >
-          <TextArea rows={4} placeholder="Please enter at least five characters" />
+          <TextArea rows={4} placeholder="About user" />
         </FormItem>
       </>
     );
@@ -187,29 +188,23 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <Modal
       width={640}
+      closable={false}
       bodyStyle={{ padding: '32px 40px 48px' }}
       destroyOnClose
-      title="Rule setting"
+      title="Update User Info"
       visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
     >
       <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
         <Step title="Basic info" />
-        <Step title="Configure rule properties" />
-        <Step title="Set scheduling period" />
+        <Step title="Access/Residence" />
+        <Step title="Bio/Skills" />
       </Steps>
       <Form
         {...formLayout}
         form={form}
-        initialValues={{
-          target: formVals.target,
-          template: formVals.template,
-          type: formVals.type,
-          frequency: formVals.frequency,
-          name: formVals.name,
-          desc: formVals.desc,
-        }}
+        initialValues={{ ...formVals, dob: formVals.dob && moment(formVals.dob) }}
       >
         {renderContent()}
       </Form>
