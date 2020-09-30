@@ -12,7 +12,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="New Rule"
+      closable
+      title="New User"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}

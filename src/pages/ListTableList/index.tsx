@@ -2,12 +2,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, Divider, Drawer, Input, message } from 'antd';
+import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { addRule, queryRule, removeRule, updateUser } from './service';
+import { createUser, getUsers, deleteUsers, updateUser } from './service';
 
 /**
  * Add node
@@ -16,7 +16,7 @@ import { addRule, queryRule, removeRule, updateUser } from './service';
 const handleAdd = async (fields: API.CreateUserDto) => {
   const hide = message.loading('Adding');
   try {
-    await addRule({ ...fields });
+    await createUser({ ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -54,7 +54,7 @@ const handleRemove = async (selectedRows: API.UserDto[]) => {
   const hide = message.loading('Deleting');
   if (!selectedRows) return true;
   try {
-    await removeRule({
+    await deleteUsers({
       key: selectedRows.map((row) => row.id),
     });
     hide();
@@ -76,14 +76,25 @@ const TableList: React.FC<{}> = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.UserDto[]>([]);
   const columns: ProColumns<API.UserDto>[] = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      hideInSearch: true,
+      hideInTable: true,
+      hideInForm: true,
+    },
+    {
       dataIndex: 'photoUrl',
       valueType: 'avatar',
       hideInForm: true,
+      hideInDescriptions: true,
+      hideInSearch: true,
     },
     {
       title: 'Name',
       dataIndex: 'firstName',
+      // tip: 'click to see more',
       sorter: true,
+      hideInDescriptions: true,
       formItemProps: {
         rules: [
           {
@@ -100,6 +111,7 @@ const TableList: React.FC<{}> = () => {
       title: 'Surname',
       dataIndex: 'lastName',
       sorter: true,
+      hideInDescriptions: true,
       formItemProps: {
         rules: [
           {
@@ -125,14 +137,7 @@ const TableList: React.FC<{}> = () => {
         ],
       },
     },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      valueType: 'textarea',
-      formItemProps: {
-        rules: [{ max: 250, whitespace: true }],
-      },
-    },
+
     {
       title: 'Phone',
       dataIndex: 'phoneNumber',
@@ -160,20 +165,67 @@ const TableList: React.FC<{}> = () => {
       title: 'Updated',
       dataIndex: 'updatedAt',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      hideInSearch: true,
+      defaultSortOrder: 'descend',
+      valueType: 'dateTime',
+      hideInForm: true,
+    },
+    {
+      title: 'Created',
+      dataIndex: 'createdAt',
+      sorter: true,
+      defaultSortOrder: 'descend',
       // tip: "When user's details was updated",
       valueType: 'dateTime',
       hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="Please enter the reason for the exception!" />;
-        }
-        return defaultRender(item);
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      valueType: 'textarea',
+      hideInTable: true,
+      hideInSearch: true,
+      formItemProps: {
+        rules: [{ max: 250, whitespace: true }],
       },
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      hideInSearch: true,
+      hideInTable: true,
+      valueEnum: {
+        0: { text: 'Male', role: 'MALE' },
+        1: { text: 'Female', role: 'FEMALE' },
+        2: { text: 'Unspecified', role: 'UNSPECIFIED' },
+      },
+    },
+    {
+      title: 'Birthday',
+      dataIndex: 'dob',
+      // tip: "When user's details was updated",
+      valueType: 'dateTime',
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: 'City',
+      dataIndex: 'city',
+      hideInSearch: true,
+      hideInTable: true,
+    },
+
+    {
+      title: 'Skills',
+      dataIndex: 'technologies',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: 'Actions',
@@ -189,8 +241,8 @@ const TableList: React.FC<{}> = () => {
           >
             Edit
           </a>
-          <Divider type="vertical" />
-          <a href="">Subscribe to alerts</a>
+          {/* <Divider type="vertical" />
+          <a href="">Subscribe to alerts</a> */}
         </>
       ),
     },
@@ -211,19 +263,23 @@ const TableList: React.FC<{}> = () => {
           </Button>,
         ]}
         request={async (params, sorter, filter) => {
-          const result = await queryRule({
+          let skip = params.current || 0;
+          skip = skip > 0 ? skip - 1 : skip;
+          skip *= params.pageSize || 1;
+          const result = await getUsers({
             limit: params.pageSize,
-            skip: params.current && params.current - 1,
+            skip,
             search: { ...filter },
             opts: { sort: { ...sorter } },
           });
-          return {
+          const res = {
             data: result.items,
             total: result.totalCount,
             success: true,
             pageSize: params.pageSize,
             current: params.current,
           };
+          return res;
         }}
         columns={columns}
         rowSelection={{
@@ -251,7 +307,7 @@ const TableList: React.FC<{}> = () => {
           >
             Delete selected
           </Button>
-          <Button type="primary">Approve selected</Button>
+          {/* <Button type="primary">Approve selected</Button> */}
         </FooterToolbar>
       )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
@@ -302,9 +358,13 @@ const TableList: React.FC<{}> = () => {
           <ProDescriptions<API.UserDto>
             column={2}
             title={`${row.firstName} ${row.lastName}`}
-            request={async () => ({
-              data: row || {},
-            })}
+            request={async () => {
+              // const { items } = await getUsers({ search: { id: row.id } });
+
+              return {
+                data: row || {},
+              };
+            }}
             params={{
               id: row?.id,
             }}

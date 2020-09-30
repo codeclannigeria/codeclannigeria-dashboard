@@ -1,22 +1,23 @@
 import { request } from 'umi';
 
-export async function queryRule(params?: API.QueryParams) {
+export async function getUsers(params?: API.QueryParams) {
   return request<API.PagedList<API.UserDto>>('/api/users', {
     params,
   });
 }
 
-export async function removeRule(params: { key: string[] }) {
-  return request('/api/users', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+export async function deleteUsers(params: { key: string[] }) {
+  const isHardDelete = true;
+  const input: API.DeleteManyType = {
+    ids: params.key,
+  };
+  return request(`/api/users/?isHardDelete=${isHardDelete}`, {
+    method: 'DELETE',
+    data: input,
   });
 }
 
-export async function addRule(params: API.CreateUserDto) {
+export async function createUser(params: API.CreateUserDto) {
   return request('/api/users', {
     method: 'POST',
     data: {
