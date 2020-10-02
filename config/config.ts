@@ -9,6 +9,8 @@ const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   hash: true,
+  base: 'https://codeclannigeria.github.io/',
+  publicPath: '/codeclannigeria-dashboard/',
   antd: {},
   dva: {
     hmr: true,
