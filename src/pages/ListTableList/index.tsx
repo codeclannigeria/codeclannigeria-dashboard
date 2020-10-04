@@ -78,7 +78,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: 'ID',
       dataIndex: 'id',
-      hideInSearch: true,
+      search: false,
       hideInTable: true,
       hideInForm: true,
     },
@@ -87,7 +87,7 @@ const TableList: React.FC<{}> = () => {
       valueType: 'avatar',
       hideInForm: true,
       hideInDescriptions: true,
-      hideInSearch: true,
+      search: false,
     },
     {
       title: 'Name',
@@ -165,8 +165,8 @@ const TableList: React.FC<{}> = () => {
       title: 'Updated',
       dataIndex: 'updatedAt',
       sorter: true,
-      hideInSearch: true,
-      defaultSortOrder: 'descend',
+      search: false,
+      defaultSortOrder: 'ascend',
       valueType: 'dateTime',
       hideInForm: true,
     },
@@ -174,7 +174,7 @@ const TableList: React.FC<{}> = () => {
       title: 'Created',
       dataIndex: 'createdAt',
       sorter: true,
-      defaultSortOrder: 'descend',
+      defaultSortOrder: 'ascend',
       // tip: "When user's details was updated",
       valueType: 'dateTime',
       hideInForm: true,
@@ -184,7 +184,7 @@ const TableList: React.FC<{}> = () => {
       dataIndex: 'description',
       valueType: 'textarea',
       hideInTable: true,
-      hideInSearch: true,
+      search: false,
       formItemProps: {
         rules: [{ max: 250, whitespace: true }],
       },
@@ -192,7 +192,7 @@ const TableList: React.FC<{}> = () => {
     {
       title: 'Gender',
       dataIndex: 'gender',
-      hideInSearch: true,
+      search: false,
       hideInTable: true,
       valueEnum: {
         0: { text: 'Male', role: 'MALE' },
@@ -206,25 +206,25 @@ const TableList: React.FC<{}> = () => {
       // tip: "When user's details was updated",
       valueType: 'dateTime',
       hideInTable: true,
-      hideInSearch: true,
+      search: false,
     },
     {
       title: 'Country',
       dataIndex: 'country',
-      hideInSearch: true,
+      search: false,
       hideInTable: true,
     },
     {
       title: 'City',
       dataIndex: 'city',
-      hideInSearch: true,
+      search: false,
       hideInTable: true,
     },
 
     {
       title: 'Skills',
       dataIndex: 'technologies',
-      hideInSearch: true,
+      search: false,
       hideInTable: true,
     },
     {
@@ -258,7 +258,7 @@ const TableList: React.FC<{}> = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button key="addButton" type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> New
           </Button>,
         ]}
@@ -346,7 +346,6 @@ const TableList: React.FC<{}> = () => {
           values={stepFormValues}
         />
       ) : null}
-
       <Drawer
         width={600}
         visible={!!row}
@@ -358,16 +357,8 @@ const TableList: React.FC<{}> = () => {
           <ProDescriptions<API.UserDto>
             column={2}
             title={`${row.firstName} ${row.lastName}`}
-            request={async () => {
-              // const { items } = await getUsers({ search: { id: row.id } });
-
-              return {
-                data: row || {},
-              };
-            }}
-            params={{
-              id: row?.id,
-            }}
+            request={async () => ({ data: row || {} })}
+            params={{ id: row?.id }}
             columns={columns}
           />
         )}

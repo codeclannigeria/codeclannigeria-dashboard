@@ -104,3 +104,7 @@ export const request: RequestConfig = {
 };
 const authToken = localStoreService.getAuthToken();
 if (authToken) request.headers = { Authorization: `Bearer ${authToken}` };
+
+if (process.env.NODE_ENV === 'production') {
+  request.prefix = 'https://codeclannigeria-api.herokuapp.com';
+}

@@ -5,12 +5,12 @@ import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 
 // https://umijs.org/config/
-const { REACT_APP_ENV } = process.env;
+const { REACT_APP_ENV, NODE_ENV } = process.env;
 
 export default defineConfig({
   hash: true,
-  base: '/codeclannigeria-dashboard/',
-  publicPath: '/codeclannigeria-dashboard/',
+  base: NODE_ENV === 'production' ? '/codeclannigeria-dashboard/' : undefined,
+  publicPath: NODE_ENV === 'production' ? '/codeclannigeria-dashboard/' : undefined,
 
   antd: {},
   dva: {
