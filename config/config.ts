@@ -1,17 +1,13 @@
 import { defineConfig } from 'umi';
-
 import { pagePath } from '../src/routes';
 import defaultSettings from './defaultSettings';
-import proxy from './proxy';
+import proxy from './proxy'; // https://umijs.org/config/
 
-// https://umijs.org/config/
 const { REACT_APP_ENV, NODE_ENV } = process.env;
-
 export default defineConfig({
   hash: true,
   base: NODE_ENV === 'production' ? '/codeclannigeria-dashboard/' : undefined,
   publicPath: NODE_ENV === 'production' ? '/codeclannigeria-dashboard/' : undefined,
-
   antd: {},
   dva: {
     hmr: true,
@@ -47,10 +43,10 @@ export default defineConfig({
       ],
     },
     {
-      path: '/welcome',
-      name: 'welcome',
-      icon: 'smile',
-      component: './Welcome',
+      path: '/dashboard',
+      name: 'dashboard',
+      icon: 'dashboard',
+      component: './Dashboard',
     },
     {
       path: '/admin',
@@ -75,7 +71,7 @@ export default defineConfig({
     },
     {
       path: '/',
-      redirect: '/welcome',
+      redirect: '/dashboard',
     },
     {
       component: './404',
