@@ -3,7 +3,7 @@ import { GridContent } from '@ant-design/pro-layout';
 import { Col, Dropdown, Menu, Row } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker/generatePicker';
 import { RadioChangeEvent } from 'antd/es/radio';
-import moment from 'moment';
+import { Moment } from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect, Dispatch } from 'umi';
 
@@ -18,7 +18,7 @@ const TopSearch = React.lazy(() => import('./components/TopSearch'));
 const ProportionSales = React.lazy(() => import('./components/ProportionSales'));
 const OfflineData = React.lazy(() => import('./components/OfflineData'));
 
-type RangePickerValue = RangePickerProps<moment.Moment>['value'];
+type RangePickerValue = RangePickerProps<Moment>['value'];
 
 interface DashboardProps {
   dashboard: AnalysisData;
@@ -43,12 +43,20 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
 
   useEffect(() => {
     reqRef = requestAnimationFrame(() => {
-      dispatch({
-        type: 'dashboard/fetch',
+      // dispatch({
+      //   type: 'dashboard/fetch',
+      // });
+      dispatch<API.QueryParams>({
+        type: 'dashboard/getSubmissions',
+        payload: { limit: 1000000 },
+      });
+      dispatch<API.QueryParams>({
+        type: 'dashboard/getUsers',
+        payload: { limit: 1000000, opts: { sort: { createdAt: 1 } } },
       });
     });
     return () => {
-      dispatch({
+      dispatch<API.QueryParams>({
         type: 'dashboard/clear',
       });
       cancelAnimationFrame(reqRef);
@@ -93,8 +101,8 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
       return '';
     }
     if (
-      rangePickerValue[0].isSame(value[0] as moment.Moment, 'day') &&
-      rangePickerValue[1].isSame(value[1] as moment.Moment, 'day')
+      rangePickerValue[0].isSame(value[0] as Moment, 'day') &&
+      rangePickerValue[1].isSame(value[1] as Moment, 'day')
     ) {
       return styles.currentDate;
     }
@@ -105,7 +113,7 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
     const { rangePickerValue, salesType, currentTabKey } = state;
 
     const {
-      visitData,
+      submissionsData,
       visitData2,
       salesData,
       searchData,
@@ -114,6 +122,7 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
       salesTypeData,
       salesTypeDataOnline,
       salesTypeDataOffline,
+      usersData,
     } = dashboard;
     let salesPieData;
     if (salesType === 'all') {
@@ -123,8 +132,8 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
     }
     const menu = (
       <Menu>
-        <Menu.Item>操作一</Menu.Item>
-        <Menu.Item>操作二</Menu.Item>
+        <Menu.Item>Option 1</Menu.Item>
+        <Menu.Item>Option 2</Menu.Item>
       </Menu>
     );
 
@@ -141,7 +150,11 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
       <GridContent>
         <React.Fragment>
           <Suspense fallback={<PageLoading />}>
-            <IntroduceRow loading={loading} visitData={visitData} />
+            <IntroduceRow
+              loading={loading}
+              submissionsData={submissionsData}
+              usersData={usersData}
+            />
           </Suspense>
           <Suspense fallback={null}>
             <SalesCard

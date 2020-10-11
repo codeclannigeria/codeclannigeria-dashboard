@@ -7,6 +7,7 @@ export default {
   dev: {
     '/api': {
       target: 'https://codeclannigeria-api.herokuapp.com',
+      // target: 'http://localhost:4000',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

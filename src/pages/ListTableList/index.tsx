@@ -4,10 +4,9 @@ import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
-
+import userService from '@/services/user.service';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { createUser, getUsers, deleteUsers, updateUser } from './service';
 
 /**
  * Add node
@@ -16,7 +15,7 @@ import { createUser, getUsers, deleteUsers, updateUser } from './service';
 const handleAdd = async (fields: API.CreateUserDto) => {
   const hide = message.loading('Adding');
   try {
-    await createUser({ ...fields });
+    await userService.createUser({ ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -34,7 +33,7 @@ const handleAdd = async (fields: API.CreateUserDto) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Updating...');
   try {
-    await updateUser({ ...fields });
+    await userService.updateUser({ ...fields });
     hide();
 
     message.success('Updated successfully');
@@ -54,7 +53,7 @@ const handleRemove = async (selectedRows: API.UserDto[]) => {
   const hide = message.loading('Deleting');
   if (!selectedRows) return true;
   try {
-    await deleteUsers({
+    await userService.deleteUsers({
       key: selectedRows.map((row) => row.id),
     });
     hide();
@@ -266,7 +265,7 @@ const TableList: React.FC<{}> = () => {
           let skip = params.current || 0;
           skip = skip > 0 ? skip - 1 : skip;
           skip *= params.pageSize || 1;
-          const result = await getUsers({
+          const result = await userService.getUsers({
             limit: params.pageSize,
             skip,
             search: { ...filter },

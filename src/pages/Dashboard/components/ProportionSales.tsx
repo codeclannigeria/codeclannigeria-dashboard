@@ -5,7 +5,7 @@ import { RadioChangeEvent } from 'antd/es/radio';
 import React from 'react';
 import { VisitDataType } from '../data.d';
 import { Pie } from './Charts';
-import Yuan from '../utils/Yuan';
+import Naira from '../utils/Naira';
 import styles from '../style.less';
 
 const ProportionSales = ({
@@ -60,9 +60,9 @@ const ProportionSales = ({
       <Pie
         hasLegend
         subTitle={<FormattedMessage id="dashboard.analysis.sales" defaultMessage="Sales" />}
-        total={() => <Yuan>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Yuan>}
+        total={() => <Naira>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Naira>}
         data={salesPieData}
-        valueFormat={(value) => <Yuan>{value}</Yuan>}
+        valueFormat={(value) => <Naira>{value}</Naira>}
         height={248}
         lineWidth={4}
       />

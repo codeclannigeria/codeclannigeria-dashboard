@@ -27,7 +27,6 @@ export interface RadarData {
   label: string;
   value: number;
 }
-
 export interface AnalysisData {
   visitData: VisitDataType[];
   visitData2: VisitDataType[];
@@ -39,4 +38,6 @@ export interface AnalysisData {
   salesTypeDataOnline: VisitDataType[];
   salesTypeDataOffline: VisitDataType[];
   radarData: RadarData[];
+  submissionsData: API.PagedList<API.SubmissionDto>;
+  usersData: API.PagedList<API.UserDto>;
 }
