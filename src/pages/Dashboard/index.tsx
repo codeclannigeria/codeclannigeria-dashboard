@@ -22,7 +22,6 @@ interface DashboardProps {
   dashboard: AnalysisData;
   dispatch: Dispatch;
   loading: boolean;
-  ß;
 }
 
 interface DashboardState {
