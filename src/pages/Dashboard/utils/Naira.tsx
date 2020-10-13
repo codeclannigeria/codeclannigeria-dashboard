@@ -1,35 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { yuan } from '../components/Charts';
 /**
  * 减少使用 dangerouslySetInnerHTML
  */
-export default class Naira extends React.Component<{
-  children: React.ReactText;
-}> {
-  main: HTMLSpanElement | undefined | null = null;
 
-  componentDidMount() {
-    this.renderToHtml();
-  }
+const Naira = ({ children }: { children: React.ReactText }) => {
+  let main: HTMLSpanElement | null | undefined;
 
-  componentDidUpdate() {
-    this.renderToHtml();
-  }
+  useEffect(() => {
+    if (main) main.innerHTML = yuan(children);
+  }, []);
 
-  renderToHtml = () => {
-    const { children } = this.props;
-    if (this.main) {
-      this.main.innerHTML = yuan(children);
-    }
-  };
-
-  render() {
-    return (
-      <span
-        ref={(ref) => {
-          this.main = ref;
-        }}
-      />
-    );
-  }
-}
+  return (
+    <span
+      ref={(ref) => {
+        main = ref;
+      }}
+    />
+  );
+};
+export default Naira;

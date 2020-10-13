@@ -265,6 +265,9 @@ const TableList: React.FC<{}> = () => {
           let skip = params.current || 0;
           skip = skip > 0 ? skip - 1 : skip;
           skip *= params.pageSize || 1;
+
+          // eslint-disable-next-line no-param-reassign
+          if (Object.keys(sorter).length === 0) sorter = { createdAt: 'descend' };
           const result = await userService.getUsers({
             limit: params.pageSize,
             skip,

@@ -29,6 +29,7 @@ const IntroduceRow = ({
 }) => {
   const getGraphData = (items: any[], pastWeek: number) => {
     const data: { x: string; y: number }[] = [];
+    if (!items) return data;
     const today = new Date();
     for (let i = 0; i < pastWeek; i += 1) {
       const toDate = moment(today)
@@ -40,11 +41,8 @@ const IntroduceRow = ({
         const date = new Date(item.createdAt);
         return date >= fromDate && date <= toDate;
       });
-
       data.push({
-        x: `${moment(toDate).subtract(7, 'days').format('YYYY-MM-DD')} to ${moment(toDate).format(
-          'YYYY-MM-DD',
-        )}`,
+        x: `${moment(toDate).format('YY/MM/DD')}`,
         y: res.length,
       });
     }
@@ -59,11 +57,12 @@ const IntroduceRow = ({
     }[],
     weekCount: number,
   ) => {
+    if (!data.length) return 0;
     const sum = data.map((item) => item.y).reduce((prev, curr) => prev + curr);
     return sum && sum > 0 ? sum / weekCount : 0;
   };
   const mentorPercentage = () => {
-    const { items } = usersData;
+    const { items = [] } = usersData;
     const mentors = items.filter((item) => item.role === 'MENTOR');
 
     return (mentors?.length * 100) / usersData.totalCount;
@@ -84,12 +83,12 @@ const IntroduceRow = ({
           footer={<Field label="Monthly Expense" value={`₦ ${numeral(0).format('0,0')}`} />}
           contentHeight={46}
         >
-          <Trend flag="up" style={{ marginRight: 16 }}>
-            Weekly Profit
+          <Trend flag="down" style={{ marginRight: 16 }} reverseColor>
+            Weekly Expense
             <span className={styles.trendText}>0%</span>
           </Trend>
-          <Trend flag="down">
-            Weekly Expense
+          <Trend flag="up" reverseColor>
+            Weekly Profit
             <span className={styles.trendText}>0%</span>
           </Trend>
         </ChartCard>
@@ -146,7 +145,7 @@ const IntroduceRow = ({
             <Field
               label="Mentors"
               value={numeral(
-                usersData.items.filter((item) => item.role === 'MENTOR')?.length,
+                usersData.items?.filter((item) => item.role === 'MENTOR')?.length,
               ).format('0,0')}
             />
           }

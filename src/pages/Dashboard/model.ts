@@ -1,3 +1,4 @@
+import { getEntities } from '@/services/get.service';
 import userService from '@/services/user.service';
 import { Effect, Reducer } from 'umi';
 
@@ -9,9 +10,10 @@ export interface ModelType {
   state: AnalysisData;
   effects: {
     fetch: Effect;
-    fetchSalesData: Effect;
     getSubmissions: Effect;
     getUsers: Effect;
+    // getMentorMentees: Effect;
+    getEntities: Effect;
   };
   reducers: {
     save: Reducer<AnalysisData>;
@@ -19,40 +21,25 @@ export interface ModelType {
   };
 }
 const initState: AnalysisData = {
-  visitData: [],
   visitData2: [],
-  salesData: [],
   searchData: [],
   offlineData: [],
   offlineChartData: [],
-  salesTypeData: [],
-  salesTypeDataOnline: [],
-  salesTypeDataOffline: [],
   radarData: [],
   submissionsData: { items: [], totalCount: 0 },
   usersData: { items: [], totalCount: 0 },
+  mentorMenteesData: { items: [], totalCount: 0 },
 };
 
 const Model: ModelType = {
   namespace: 'dashboard',
-
   state: initState,
-
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(fakeChartData);
       yield put({
         type: 'save',
         payload: response,
-      });
-    },
-    *fetchSalesData(_, { call, put }) {
-      const response = yield call(fakeChartData);
-      yield put({
-        type: 'save',
-        payload: {
-          salesData: response.salesData,
-        },
       });
     },
     *getSubmissions({ payload }, { call, put }) {
@@ -62,16 +49,21 @@ const Model: ModelType = {
         payload: { submissionsData: response },
       });
     },
+    *getEntities({ payload }, { call, put }) {
+      const response = yield call(() => getEntities(payload.path, payload.params));
+      yield put({
+        type: 'save',
+        payload: { [payload.responseProp]: response },
+      });
+    },
     *getUsers({ payload }, { call, put }) {
       const response = yield call(() => userService.getUsers(payload));
-
       yield put({
         type: 'save',
         payload: { usersData: response },
       });
     },
   },
-
   reducers: {
     save(state, { payload }) {
       return {

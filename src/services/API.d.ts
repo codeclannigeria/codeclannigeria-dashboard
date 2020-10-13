@@ -43,4 +43,9 @@ declare namespace API {
     totalCount: number;
     items: T[];
   }
+  export interface SMQuery<T> {
+    params: API.QueryParams;
+    responseProp: string;
+    path: string;
+  }
 }

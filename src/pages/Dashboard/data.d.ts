@@ -1,8 +1,7 @@
-export interface VisitDataType {
+export interface GraphData {
   x: string;
   y: number;
 }
-
 export interface SearchDataType {
   index: number;
   keyword: string;
@@ -28,16 +27,12 @@ export interface RadarData {
   value: number;
 }
 export interface AnalysisData {
-  visitData: VisitDataType[];
-  visitData2: VisitDataType[];
-  salesData: VisitDataType[];
+  visitData2: GraphData[];
   searchData: SearchDataType[];
   offlineData: OfflineDataType[];
   offlineChartData: OfflineChartData[];
-  salesTypeData: VisitDataType[];
-  salesTypeDataOnline: VisitDataType[];
-  salesTypeDataOffline: VisitDataType[];
   radarData: RadarData[];
   submissionsData: API.PagedList<API.SubmissionDto>;
   usersData: API.PagedList<API.UserDto>;
+  mentorMenteesData: API.PagedList<API.MentorMenteeDto>;
 }

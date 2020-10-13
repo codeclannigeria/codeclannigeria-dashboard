@@ -1,11 +1,10 @@
 import { Card, Col, Row, Tabs } from 'antd';
-import { FormattedMessage, useIntl } from 'umi';
 import React from 'react';
+import { FormattedMessage } from 'umi';
 import { OfflineChartData, OfflineDataType } from '../data.d';
-
-import { TimelineChart, Pie } from './Charts';
-import NumberInfo from './NumberInfo';
 import styles from '../style.less';
+import { Pie, TimelineChart } from './Charts';
+import NumberInfo from './NumberInfo';
 
 const CustomTab = ({
   data,
@@ -57,7 +56,7 @@ const OfflineData = ({
   offlineChartData: OfflineChartData[];
   handleTabChange: (activeKey: string) => void;
 }) => {
-  const { formatMessage } = useIntl();
+  // console.log(offlineChartData, offlineData);
   return (
     <Card
       loading={loading}
@@ -73,8 +72,8 @@ const OfflineData = ({
                 height={400}
                 data={offlineChartData}
                 titleMap={{
-                  y1: formatMessage({ id: 'dashboard.analysis.traffic' }),
-                  y2: formatMessage({ id: 'dashboard.analysis.payments' }),
+                  y1: 'Traffic',
+                  y2: 'Payments',
                 }}
               />
             </div>

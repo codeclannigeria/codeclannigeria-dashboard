@@ -1,70 +1,37 @@
-import { Card, Radio } from 'antd';
-
-import { FormattedMessage } from 'umi';
-import { RadioChangeEvent } from 'antd/es/radio';
+import { Card } from 'antd';
 import React from 'react';
-import { VisitDataType } from '../data.d';
-import { Pie } from './Charts';
-import Naira from '../utils/Naira';
+
+import { GraphData } from '../data.d';
 import styles from '../style.less';
+import { Pie } from './Charts';
 
 const ProportionSales = ({
-  dropdownGroup,
-  salesType,
   loading,
   salesPieData,
-  handleChangeSalesType,
 }: {
   loading: boolean;
-  dropdownGroup: React.ReactNode;
-  salesType: 'all' | 'online' | 'stores';
-  salesPieData: VisitDataType[];
-  handleChangeSalesType?: (e: RadioChangeEvent) => void;
+  salesPieData: GraphData[];
 }) => (
   <Card
     loading={loading}
     className={styles.salesCard}
     bordered={false}
-    title={
-      <FormattedMessage
-        id="dashboard.analysis.the-proportion-of-sales"
-        defaultMessage="The Proportion of Sales"
-      />
-    }
+    title="Enrollment Ratio"
     style={{
       height: '100%',
     }}
-    extra={
-      <div className={styles.salesCardExtra}>
-        {dropdownGroup}
-        <div className={styles.salesTypeRadio}>
-          <Radio.Group value={salesType} onChange={handleChangeSalesType}>
-            <Radio.Button value="all">
-              <FormattedMessage id="dashboard.channel.all" defaultMessage="ALL" />
-            </Radio.Button>
-            <Radio.Button value="online">
-              <FormattedMessage id="dashboard.channel.online" defaultMessage="Online" />
-            </Radio.Button>
-            <Radio.Button value="stores">
-              <FormattedMessage id="dashboard.channel.stores" defaultMessage="Stores" />
-            </Radio.Button>
-          </Radio.Group>
-        </div>
-      </div>
-    }
   >
     <div>
-      <h4 style={{ marginTop: 8, marginBottom: 32 }}>
-        <FormattedMessage id="dashboard.analysis.sales" defaultMessage="Sales" />
-      </h4>
+      <h4 style={{ marginTop: 8, marginBottom: 32 }}>Track Enrollments</h4>
       <Pie
         hasLegend
-        subTitle={<FormattedMessage id="dashboard.analysis.sales" defaultMessage="Sales" />}
-        total={() => <Naira>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Naira>}
+        subTitle="Total"
+        total={() => salesPieData.reduce((pre, now) => now.y + pre, 0)}
         data={salesPieData}
-        valueFormat={(value) => <Naira>{value}</Naira>}
+        valueFormat={(value) => value}
         height={248}
         lineWidth={4}
+        animate
       />
     </div>
   </Card>
