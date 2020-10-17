@@ -1,6 +1,6 @@
 import { Card, Col, Row, Tabs } from 'antd';
 import React from 'react';
-import { FormattedMessage } from 'umi';
+
 import { OfflineChartData, OfflineDataType } from '../data.d';
 import styles from '../style.less';
 import { Pie, TimelineChart } from './Charts';
@@ -13,22 +13,29 @@ const CustomTab = ({
   data: OfflineDataType;
   currentTabKey: string;
 }) => (
-  <Row gutter={8} style={{ width: 138, margin: '8px 0' }} itemType="flex">
+  <Row
+    gutter={8}
+    style={{
+      width: 138,
+      margin: '8px 0',
+    }}
+    itemType="flex"
+  >
     <Col span={12}>
       <NumberInfo
         title={data.name}
-        subTitle={
-          <FormattedMessage
-            id="dashboard.analysis.conversion-rate"
-            defaultMessage="Conversion Rate"
-          />
-        }
+        subTitle="转化率"
         gap={2}
         total={`${data.cvr * 100}%`}
         theme={currentKey !== data.name ? 'light' : undefined}
       />
     </Col>
-    <Col span={12} style={{ paddingTop: 36 }}>
+    <Col
+      span={12}
+      style={{
+        paddingTop: 36,
+      }}
+    >
       <Pie
         animate={false}
         inner={0.55}
@@ -62,12 +69,18 @@ const OfflineData = ({
       loading={loading}
       className={styles.offlineCard}
       bordered={false}
-      style={{ marginTop: 32 }}
+      style={{
+        marginTop: 32,
+      }}
     >
       <Tabs activeKey={activeKey} onChange={handleTabChange}>
         {offlineData.map((shop) => (
           <TabPane tab={<CustomTab data={shop} currentTabKey={activeKey} />} key={shop.name}>
-            <div style={{ padding: '0 24px' }}>
+            <div
+              style={{
+                padding: '0 24px',
+              }}
+            >
               <TimelineChart
                 height={400}
                 data={offlineChartData}

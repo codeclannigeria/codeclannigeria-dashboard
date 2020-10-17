@@ -37,6 +37,7 @@ const Model: ModelType = {
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(fakeChartData);
+
       yield put({
         type: 'save',
         payload: response,
@@ -44,13 +45,15 @@ const Model: ModelType = {
     },
     *getSubmissions({ payload }, { call, put }) {
       const response = yield call(() => getSubmissions(payload));
+
       yield put({
         type: 'save',
         payload: { submissionsData: response },
       });
     },
     *getEntities({ payload }, { call, put }) {
-      const response = yield call(() => getEntities(payload.path, payload.params));
+      const response = yield call(() => getEntities(payload.url, payload.params));
+
       yield put({
         type: 'save',
         payload: { [payload.responseProp]: response },
@@ -58,6 +61,7 @@ const Model: ModelType = {
     },
     *getUsers({ payload }, { call, put }) {
       const response = yield call(() => userService.getUsers(payload));
+
       yield put({
         type: 'save',
         payload: { usersData: response },

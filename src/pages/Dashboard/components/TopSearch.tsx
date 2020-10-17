@@ -3,7 +3,6 @@ import { Card, Col, Row, Table, Tooltip } from 'antd';
 import moment from 'moment';
 import numeral from 'numeral';
 import React from 'react';
-import { FormattedMessage } from 'umi';
 
 import { SearchDataType } from '../data.d';
 import styles from '../style.less';
@@ -13,7 +12,7 @@ import Trend from './Trend';
 
 const columns = [
   {
-    title: <FormattedMessage id="dashboard.table.rank" defaultMessage="Rank" />,
+    title: 'Rank',
     dataIndex: 'index',
     key: 'index',
   },
@@ -27,17 +26,42 @@ const columns = [
     title: 'Tasks',
     dataIndex: 'count',
     key: 'count',
-    sorter: (a: { count: number }, b: { count: number }) => a.count - b.count,
+    sorter: (
+      a: {
+        count: number;
+      },
+      b: {
+        count: number;
+      },
+    ) => a.count - b.count,
     className: styles.alignRight,
   },
   {
     title: 'Monthly trend',
     dataIndex: 'range',
     key: 'range',
-    sorter: (a: { range: number }, b: { range: number }) => a.range - b.range,
-    render: (text: React.ReactNode, record: { status: number }) => (
+    sorter: (
+      a: {
+        range: number;
+      },
+      b: {
+        range: number;
+      },
+    ) => a.range - b.range,
+    render: (
+      text: React.ReactNode,
+      record: {
+        status: number;
+      },
+    ) => (
       <Trend flag={record.status === 1 ? 'down' : 'up'} reverseColor colorful={!!text && text > 0}>
-        <span style={{ marginRight: 4 }}>{numeral(text).format('0,0')}%</span>
+        <span
+          style={{
+            marginRight: 4,
+          }}
+        >
+          {numeral(text).format('0,0')}%
+        </span>
       </Trend>
     ),
   },
@@ -64,13 +88,16 @@ const TopSearch = ({
     goBack?: number;
     duration?: 'days' | 'weeks' | 'months';
   }) => {
-    const data: { x: string; y: number }[] = [];
+    const data: {
+      x: string;
+      y: number;
+    }[] = [];
     if (!items) return data;
     const now = new Date();
+
     for (let i = nodes; i >= 0; i -= 1) {
       const toDate = moment(now).subtract(goBack * i, duration);
       const fromDate = moment(toDate).subtract(goBack, duration);
-
       const res = items.filter((item) => {
         const date = new Date(item.createdAt);
         return date >= fromDate.toDate() && date <= toDate.toDate();
@@ -80,8 +107,10 @@ const TopSearch = ({
         y: res.length,
       });
     }
+
     return data;
   };
+
   const { items } = submissionsData;
 
   const dateData = (duration: 'months' | 'weeks', goBack = 0) => {
@@ -93,10 +122,17 @@ const TopSearch = ({
     });
   };
 
-  const diffData = (d1: any[], d2: any[]): { status: 'up' | 'down'; diff: number } => ({
+  const diffData = (
+    d1: any[],
+    d2: any[],
+  ): {
+    status: 'up' | 'down';
+    diff: number;
+  } => ({
     status: d1.length > d2.length ? 'up' : 'down',
     diff: Math.abs(d1.length - d2.length),
   });
+
   const weekData = [
     dateData('weeks'),
     dateData('weeks', 1),
@@ -111,7 +147,6 @@ const TopSearch = ({
     dateData('months', 3),
   ];
   const monthDiff = diffData(monthData[0], monthData[1]);
-
   return (
     <Card
       loading={loading}
@@ -122,13 +157,23 @@ const TopSearch = ({
       }}
     >
       <Row gutter={68} itemType="flex">
-        <Col sm={12} xs={24} style={{ marginBottom: 24 }}>
+        <Col
+          sm={12}
+          xs={24}
+          style={{
+            marginBottom: 24,
+          }}
+        >
           <NumberInfo
             subTitle={
               <span>
                 Weekly Submissions
                 <Tooltip title="Weekly completion trend">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
+                  <InfoCircleOutlined
+                    style={{
+                      marginLeft: 8,
+                    }}
+                  />
                 </Tooltip>
               </span>
             }
@@ -147,13 +192,23 @@ const TopSearch = ({
             })}
           />
         </Col>
-        <Col sm={12} xs={24} style={{ marginBottom: 24 }}>
+        <Col
+          sm={12}
+          xs={24}
+          style={{
+            marginBottom: 24,
+          }}
+        >
           <NumberInfo
             subTitle={
               <span>
                 Monthly Submissions
                 <Tooltip title="Monthly task completion trend">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
+                  <InfoCircleOutlined
+                    style={{
+                      marginLeft: 8,
+                    }}
+                  />
                 </Tooltip>
               </span>
             }
@@ -179,7 +234,9 @@ const TopSearch = ({
         columns={columns}
         dataSource={searchData}
         pagination={{
-          style: { marginBottom: 0 },
+          style: {
+            marginBottom: 0,
+          },
           pageSize: 5,
         }}
       />

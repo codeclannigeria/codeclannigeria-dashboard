@@ -46,6 +46,6 @@ declare namespace API {
   export interface SMQuery<T> {
     params: API.QueryParams;
     responseProp: string;
-    path: string;
+    url: string;
   }
 }

@@ -1,7 +1,7 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Space, Tag, Tooltip } from 'antd';
 import React from 'react';
-import { SelectLang, useModel } from 'umi';
+import { useModel } from 'umi';
 
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
@@ -70,7 +70,6 @@ const GlobalHeaderRight: React.FC<{}> = () => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
     </Space>
   );
 };

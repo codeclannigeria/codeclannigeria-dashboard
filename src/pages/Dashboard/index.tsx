@@ -59,7 +59,7 @@ const Dashboard: React.FC<DashboardProps> = ({ dashboard, dispatch, loading }) =
         payload: {
           params: { limit: 1000000 },
           responseProp: 'mentorMenteesData',
-          path: '/api/mentor-mentee',
+          url: '/api/mentor-mentee',
         },
       });
     });

@@ -13,8 +13,8 @@ export default defineConfig({
     hmr: true,
   },
   layout: {
-    name: 'Ant Design Pro',
-    locale: true,
+    name: 'Code Clan Nigeria',
+    locale: false,
   },
   locale: {
     default: 'en-US',
@@ -49,26 +49,40 @@ export default defineConfig({
       component: './Dashboard',
     },
     {
-      path: '/admin',
-      name: 'admin',
-      icon: 'crown',
+      name: 'Users',
+      icon: 'team',
+      title: 'Users',
+      path: '/users',
+      component: './Users',
+    },
+    // {
+    //   path: '/admin',
+    //   name: 'admin',
+    //   icon: 'crown',
+    //   access: 'canAdmin',
+    //   component: './Admin',
+    //   routes: [
+    //     {
+    //       path: '/admin/sub-page',
+    //       name: 'sub-page',
+    //       icon: 'smile',
+    //       component: './Welcome',
+    //     },
+    //   ],
+    // },
+    {
+      name: 'Paths',
+      icon: 'NodeExpandOutlined',
       access: 'canAdmin',
-      component: './Admin',
       routes: [
         {
-          path: '/admin/sub-page',
-          name: 'sub-page',
-          icon: 'smile',
-          component: './Welcome',
+          name: 'Tracks',
+          path: '/tracks',
+          component: './Tracks',
         },
       ],
     },
-    {
-      name: 'list.table-list',
-      icon: 'table',
-      path: '/list',
-      component: './ListTableList',
-    },
+
     {
       path: '/',
       redirect: '/dashboard',

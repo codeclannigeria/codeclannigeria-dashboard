@@ -9,28 +9,28 @@ export default {
       target: 'https://codeclannigeria-api.herokuapp.com',
       // target: 'http://localhost:4000',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      pathRewrite: { '^': '' },
     },
   },
   test: {
     '/api': {
       target: 'http://localhost:4000',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   pre: {
     '/api': {
       target: 'http://localhost:4000',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      pathRewrite: { '^': '' },
     },
   },
   proxy: {
     '/api': {
       target: process.env.API_BASE_URL,
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      pathRewrite: { '^': '' },
     },
   },
 };

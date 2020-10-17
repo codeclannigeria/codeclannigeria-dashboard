@@ -9,10 +9,10 @@ export default {
   fixSiderbar: true,
   colorWeak: false,
   menu: {
-    locale: true,
+    locale: false,
   },
   title: 'CodeClan',
-  pwa: false,
+  pwa: true,
   iconfontUrl: '',
 } as LayoutSettings & {
   pwa: boolean;
