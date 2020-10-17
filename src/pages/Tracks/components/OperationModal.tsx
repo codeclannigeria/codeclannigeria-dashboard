@@ -88,7 +88,7 @@ const OperationModal: FC<OperationModalProps> = (props) => {
 
   return (
     <Modal
-      title={done ? null : `track${current ? 'edit' : 'Add'}`}
+      title={done ? null : `Track ${current ? 'edit' : 'Add'}`}
       className={styles.standardListForm}
       width={640}
       bodyStyle={done ? { padding: '72px 0' } : { padding: '28px 0 0' }}
