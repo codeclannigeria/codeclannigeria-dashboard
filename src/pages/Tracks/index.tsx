@@ -58,7 +58,8 @@ export const Tracks: FC<TracksProps> = (props) => {
   } = props;
   const [done, setDone] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const [current, setCurrent] = useState<Partial<API.TrackDto> | undefined>(undefined);
+  const [current, setCurrent] = useState<Partial<API.TrackDto>>();
+  const [editId, setEditId] = useState('');
 
   useEffect(() => {
     dispatch<API.SMQuery<API.TrackDto>>({
@@ -90,11 +91,12 @@ export const Tracks: FC<TracksProps> = (props) => {
   const showEditModal = (item: API.TrackDto) => {
     setVisible(true);
     setCurrent(item);
+    setEditId(item.id);
   };
 
   const deleteItem = (id: string) => {
     dispatch({
-      type: 'tracks/deleteTrack',
+      type: 'tracks/delete',
       payload: { id },
     });
   };
@@ -123,10 +125,16 @@ export const Tracks: FC<TracksProps> = (props) => {
     setAddBtnBlur();
     setDone(true);
 
-    dispatch<API.CreateTrackDto>({
-      type: 'tracks/createTrack',
-      payload: values,
-    });
+    if (editId)
+      dispatch({
+        type: 'tracks/update',
+        payload: { createTrackDto: values, id: editId },
+      });
+    else
+      dispatch<API.CreateTrackDto>({
+        type: 'tracks/create',
+        payload: values,
+      });
   };
 
   return (

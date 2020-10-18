@@ -3,7 +3,7 @@
 import { getEntities } from '@/services/get.service';
 import { Effect, Reducer } from 'umi';
 
-import { createTrack, deleteTrack, queryFakeList } from './service';
+import { createTrack, deleteTrack, queryFakeList, updateTrack } from './service';
 
 export interface StateType {
   tracksData: API.PagedList<API.TrackDto>;
@@ -16,12 +16,14 @@ export interface ModelType {
   effects: {
     fetch: Effect;
     appendFetch: Effect;
-    createTrack: Effect;
-    deleteTrack: Effect;
+    create: Effect;
+    update: Effect;
+    delete: Effect;
   };
   reducers: {
     queryList: Reducer<StateType>;
     save: Reducer<StateType>;
+    update: Reducer<StateType>;
     deleteTrackReducer: Reducer<StateType>;
   };
 }
@@ -50,14 +52,21 @@ const Model: ModelType = {
         payload: Array.isArray(response) ? response : [],
       });
     },
-    *createTrack({ payload }, { call, put }) {
+    *create({ payload }, { call, put }) {
       const response = yield call(createTrack, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
-    *deleteTrack({ payload }, { call, put }) {
+    *update({ payload: { createTrackDto, id } }, { call, put }) {
+      const response = yield call(() => updateTrack(id, createTrackDto));
+      yield put({
+        type: 'update',
+        payload: response,
+      });
+    },
+    *delete({ payload }, { call, put }) {
       yield call(deleteTrack, payload.id);
       yield put({
         type: 'deleteTrackReducer',
@@ -70,6 +79,14 @@ const Model: ModelType = {
     save(state, { payload }) {
       state?.tracksData.items.splice(0, 0, payload);
       if (state?.tracksData) state.tracksData.totalCount++;
+      return { ...state, ...payload };
+    },
+    update(state, { payload }) {
+      const updated = state?.tracksData.items.find((item: API.TrackDto) => item.id === payload.id);
+      if (updated) {
+        const index = state?.tracksData.items.indexOf(updated);
+        state?.tracksData.items.splice(index as number, 1, payload);
+      }
       return { ...state, ...payload };
     },
     queryList(state, { payload }) {

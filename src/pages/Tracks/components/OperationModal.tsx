@@ -74,13 +74,12 @@ const OperationModal: FC<OperationModalProps> = (props) => {
         <Form.Item name="title" label="Title" rules={[{ required: true }]}>
           <Input placeholder="Please enter" />
         </Form.Item>
-
         <Form.Item
           name="description"
           label="Description"
           rules={[{ required: true, min: 5, max: 1024 }]}
         >
-          <TextArea rows={4} placeholder="Please enter at least five characters" />
+          <TextArea rows={4} placeholder="About this Track" />
         </Form.Item>
       </Form>
     );

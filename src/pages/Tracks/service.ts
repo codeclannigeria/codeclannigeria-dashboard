@@ -19,16 +19,6 @@ export async function createTrack(data: API.CreateTrackDto) {
   return request<API.TrackDto>('/api/tracks', { method: 'POST', data });
 }
 
-export async function updateFakeList(params: ParamsType) {
-  const { count = 5, ...restParams } = params;
-  return request('/api/fake_list', {
-    method: 'POST',
-    params: {
-      count,
-    },
-    data: {
-      ...restParams,
-      method: 'update',
-    },
-  });
+export async function updateTrack(id: string, data: API.CreateTrackDto) {
+  return request<API.TrackDto>(`/api/tracks/${id}`, { method: 'PUT', data });
 }
