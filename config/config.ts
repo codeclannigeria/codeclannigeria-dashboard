@@ -54,8 +54,7 @@ export default defineConfig({
       title: 'Users',
       path: '/users',
       component: './Users',
-    },
-    // {
+    }, // {
     //   path: '/admin',
     //   name: 'admin',
     //   icon: 'crown',
@@ -80,9 +79,13 @@ export default defineConfig({
           path: '/tracks',
           component: './Tracks',
         },
+        {
+          name: 'Tasks',
+          path: '/tasks',
+          component: './Tasks',
+        },
       ],
     },
-
     {
       path: '/',
       redirect: '/dashboard',

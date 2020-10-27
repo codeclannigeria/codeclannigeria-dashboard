@@ -1,4 +1,4 @@
-import { getEntities } from '@/services/get.service';
+import { getEntities } from '@/services/base.service';
 import userService from '@/services/user.service';
 import { Effect, Reducer } from 'umi';
 

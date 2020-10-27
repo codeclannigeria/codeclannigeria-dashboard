@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
-import { getEntities } from '@/services/get.service';
+import { getEntities } from '@/services/base.service';
 import { Effect, Reducer } from 'umi';
-
-import { createTrack, deleteTrack, queryFakeList, updateTrack } from './service';
+import { trackService } from './service';
 
 export interface StateType {
   tracksData: API.PagedList<API.TrackDto>;
@@ -15,7 +14,6 @@ export interface ModelType {
   state: StateType;
   effects: {
     fetch: Effect;
-    appendFetch: Effect;
     create: Effect;
     update: Effect;
     delete: Effect;
@@ -23,8 +21,8 @@ export interface ModelType {
   reducers: {
     queryList: Reducer<StateType>;
     save: Reducer<StateType>;
-    update: Reducer<StateType>;
-    deleteTrackReducer: Reducer<StateType>;
+    updateReducer: Reducer<StateType>;
+    deleteReducer: Reducer<StateType>;
   };
 }
 
@@ -45,31 +43,24 @@ const Model: ModelType = {
         payload: { [payload.responseProp]: response },
       });
     },
-    *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
-      yield put({
-        type: 'appendList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
     *create({ payload }, { call, put }) {
-      const response = yield call(createTrack, payload);
+      const response = yield call(trackService.createTrack, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
     *update({ payload: { createTrackDto, id } }, { call, put }) {
-      const response = yield call(() => updateTrack(id, createTrackDto));
+      const response = yield call(() => trackService.updateTrack(id, createTrackDto));
       yield put({
-        type: 'update',
+        type: 'updateReducer',
         payload: response,
       });
     },
     *delete({ payload }, { call, put }) {
-      yield call(deleteTrack, payload.id);
+      yield call(trackService.deleteTrack, payload.id);
       yield put({
-        type: 'deleteTrackReducer',
+        type: 'deleteReducer',
         payload,
       });
     },
@@ -81,7 +72,7 @@ const Model: ModelType = {
       if (state?.tracksData) state.tracksData.totalCount++;
       return { ...state, ...payload };
     },
-    update(state, { payload }) {
+    updateReducer(state, { payload }) {
       const updated = state?.tracksData.items.find((item: API.TrackDto) => item.id === payload.id);
       if (updated) {
         const index = state?.tracksData.items.indexOf(updated);
@@ -95,7 +86,7 @@ const Model: ModelType = {
         ...payload,
       };
     },
-    deleteTrackReducer(state, { payload }) {
+    deleteReducer(state, { payload }) {
       if (state?.tracksData) {
         state.tracksData.totalCount--;
         const tracks = state?.tracksData.items.filter((item) => item.id !== payload.id);
