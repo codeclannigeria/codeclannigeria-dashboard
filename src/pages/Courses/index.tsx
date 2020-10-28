@@ -7,7 +7,7 @@ import React, { useRef, useState } from 'react';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { taskService } from './service';
+import { courseService } from './service';
 
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -15,15 +15,15 @@ const TableList: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<API.TaskDto>();
-  const [selectedRowsState, setSelectedRows] = useState<API.TaskDto[]>([]);
+  const [row, setRow] = useState<API.CourseDto>();
+  const [selectedRowsState, setSelectedRows] = useState<API.CourseDto[]>([]);
 
-  const handleAdd = async (task: API.CreateTaskDto) => {
+  const handleAdd = async (course: API.CreateCourseDto) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
     try {
-      await taskService.createTask(task);
+      await courseService.createCourse(course);
       hide();
       message.success('Added successfully');
       isCompleted = true;
@@ -35,12 +35,12 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const handleUpdate = async (task: Partial<API.TaskDto>) => {
+  const handleUpdate = async (course: Partial<API.CourseDto>) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
     try {
-      await taskService.updateTask(task?.id as string, task);
+      await courseService.updateCourse(course?.id as string, course);
       hide();
       message.success('Updated successfully');
       isCompleted = true;
@@ -53,7 +53,7 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const handleRemove = async (selectedRows: API.TaskDto[]) => {
+  const handleRemove = async (selectedRows: API.CourseDto[]) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
@@ -62,7 +62,7 @@ const TableList: React.FC<{}> = () => {
       return true;
     }
     try {
-      await taskService.deleteTasks(selectedRows.map((r) => r.id));
+      await courseService.deleteCourses(selectedRows.map((r) => r.id));
       hide();
       message.success('Deleted successfully');
       isCompleted = true;
@@ -74,7 +74,7 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const columns: ProColumns<API.TaskDto>[] = [
+  const columns: ProColumns<API.CourseDto>[] = [
     {
       title: 'Title',
       dataIndex: 'title',
@@ -106,13 +106,7 @@ const TableList: React.FC<{}> = () => {
       },
       renderText: (val: string) => (val.length > 20 ? `${val.substring(0, 20)}...` : val),
     },
-    {
-      title: 'Deadline',
-      dataIndex: 'deadline',
-      valueType: 'dateTime',
-      sorter: true,
-      defaultSortOrder: 'descend',
-    },
+
     {
       title: 'Created',
       dataIndex: 'createdAt',
@@ -147,9 +141,9 @@ const TableList: React.FC<{}> = () => {
     },
   ];
 
-  const handleCreateTask = async (task: API.CreateTaskDto): Promise<void> => {
+  const handleCreateCourse = async (course: API.CreateCourseDto): Promise<void> => {
     setLoading(true);
-    const success = await handleAdd(task);
+    const success = await handleAdd(course);
     if (success) {
       setLoading(false);
       handleModalVisible(false);
@@ -162,8 +156,8 @@ const TableList: React.FC<{}> = () => {
   };
   return (
     <PageContainer>
-      <ProTable<API.TaskDto>
-        headerTitle="Task List"
+      <ProTable<API.CourseDto>
+        headerTitle="Course List"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -181,7 +175,7 @@ const TableList: React.FC<{}> = () => {
 
           // eslint-disable-next-line no-param-reassign
           if (Object.keys(sorter).length === 0) sorter = { createdAt: 'descend' };
-          const result = await taskService.getTasks({
+          const result = await courseService.getCourses({
             limit: params.pageSize,
             skip,
             search: { ...filter },
@@ -225,7 +219,7 @@ const TableList: React.FC<{}> = () => {
         loading={loading}
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
-        onSubmit={handleCreateTask}
+        onSubmit={handleCreateCourse}
       />
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
@@ -257,7 +251,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.id && (
-          <ProDescriptions<API.TaskDto>
+          <ProDescriptions<API.CourseDto>
             column={2}
             title={row?.title}
             request={async () => ({

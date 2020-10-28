@@ -75,6 +75,16 @@ export default defineConfig({
       access: 'canAdmin',
       routes: [
         {
+          name: 'Courses',
+          path: '/courses',
+          component: './Courses',
+        },
+        {
+          name: 'Stages',
+          path: '/stages',
+          component: './Stages',
+        },
+        {
           name: 'Tracks',
           path: '/tracks',
           component: './Tracks',

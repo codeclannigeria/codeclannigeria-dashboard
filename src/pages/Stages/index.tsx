@@ -7,7 +7,7 @@ import React, { useRef, useState } from 'react';
 
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { taskService } from './service';
+import { stageService } from './service';
 
 const TableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -15,15 +15,15 @@ const TableList: React.FC<{}> = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<API.TaskDto>();
-  const [selectedRowsState, setSelectedRows] = useState<API.TaskDto[]>([]);
+  const [row, setRow] = useState<API.StageDto>();
+  const [selectedRowsState, setSelectedRows] = useState<API.StageDto[]>([]);
 
-  const handleAdd = async (task: API.CreateTaskDto) => {
+  const handleAdd = async (stage: API.CreateStageDto) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
     try {
-      await taskService.createTask(task);
+      await stageService.createStage(stage);
       hide();
       message.success('Added successfully');
       isCompleted = true;
@@ -35,12 +35,12 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const handleUpdate = async (task: Partial<API.TaskDto>) => {
+  const handleUpdate = async (stage: Partial<API.StageDto>) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
     try {
-      await taskService.updateTask(task?.id as string, task);
+      await stageService.updateStage(stage?.id as string, stage);
       hide();
       message.success('Updated successfully');
       isCompleted = true;
@@ -53,7 +53,7 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const handleRemove = async (selectedRows: API.TaskDto[]) => {
+  const handleRemove = async (selectedRows: API.StageDto[]) => {
     setLoading(true);
     let isCompleted = false;
     const hide = message.loading('Please wait...');
@@ -62,7 +62,7 @@ const TableList: React.FC<{}> = () => {
       return true;
     }
     try {
-      await taskService.deleteTasks(selectedRows.map((r) => r.id));
+      await stageService.deleteStages(selectedRows.map((r) => r.id));
       hide();
       message.success('Deleted successfully');
       isCompleted = true;
@@ -74,7 +74,7 @@ const TableList: React.FC<{}> = () => {
     return isCompleted;
   };
 
-  const columns: ProColumns<API.TaskDto>[] = [
+  const columns: ProColumns<API.StageDto>[] = [
     {
       title: 'Title',
       dataIndex: 'title',
@@ -92,6 +92,18 @@ const TableList: React.FC<{}> = () => {
       },
     },
     {
+      title: 'Task Count',
+      dataIndex: 'taskCount',
+      search: false,
+      sorter: true,
+    },
+    {
+      title: 'Level',
+      dataIndex: 'level',
+      search: false,
+      sorter: true,
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       valueType: 'textarea',
@@ -106,13 +118,7 @@ const TableList: React.FC<{}> = () => {
       },
       renderText: (val: string) => (val.length > 20 ? `${val.substring(0, 20)}...` : val),
     },
-    {
-      title: 'Deadline',
-      dataIndex: 'deadline',
-      valueType: 'dateTime',
-      sorter: true,
-      defaultSortOrder: 'descend',
-    },
+
     {
       title: 'Created',
       dataIndex: 'createdAt',
@@ -127,6 +133,7 @@ const TableList: React.FC<{}> = () => {
       hideInForm: true,
       defaultSortOrder: 'descend',
     },
+
     {
       title: 'Action',
       dataIndex: 'option',
@@ -147,9 +154,9 @@ const TableList: React.FC<{}> = () => {
     },
   ];
 
-  const handleCreateTask = async (task: API.CreateTaskDto): Promise<void> => {
+  const handleCreateStage = async (stage: API.CreateStageDto): Promise<void> => {
     setLoading(true);
-    const success = await handleAdd(task);
+    const success = await handleAdd(stage);
     if (success) {
       setLoading(false);
       handleModalVisible(false);
@@ -162,8 +169,8 @@ const TableList: React.FC<{}> = () => {
   };
   return (
     <PageContainer>
-      <ProTable<API.TaskDto>
-        headerTitle="Task List"
+      <ProTable<API.StageDto>
+        headerTitle="Stage List"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -181,7 +188,7 @@ const TableList: React.FC<{}> = () => {
 
           // eslint-disable-next-line no-param-reassign
           if (Object.keys(sorter).length === 0) sorter = { createdAt: 'descend' };
-          const result = await taskService.getTasks({
+          const result = await stageService.getStages({
             limit: params.pageSize,
             skip,
             search: { ...filter },
@@ -225,7 +232,7 @@ const TableList: React.FC<{}> = () => {
         loading={loading}
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
-        onSubmit={handleCreateTask}
+        onSubmit={handleCreateStage}
       />
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
@@ -257,7 +264,7 @@ const TableList: React.FC<{}> = () => {
         closable={false}
       >
         {row?.id && (
-          <ProDescriptions<API.TaskDto>
+          <ProDescriptions<API.StageDto>
             column={2}
             title={row?.title}
             request={async () => ({
