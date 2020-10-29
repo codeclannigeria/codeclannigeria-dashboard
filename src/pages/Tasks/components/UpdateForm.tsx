@@ -6,6 +6,7 @@ import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
+import { quillModules } from '@/utils/quill-opt';
 
 export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: Partial<API.TaskDto>) => void;
@@ -110,7 +111,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <DatePicker placeholder="Deadline" style={{ width: '100%' }} showTime />
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true }]}>
-          <ReactQuill theme="snow" />
+          <ReactQuill theme="snow" modules={quillModules} />
         </FormItem>
       </Form>
     </Modal>

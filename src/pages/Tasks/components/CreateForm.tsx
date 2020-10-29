@@ -2,6 +2,7 @@ import 'react-quill/dist/quill.snow.css';
 
 import { trackService } from '@/pages/Tracks/service';
 import { getEntities } from '@/services/base.service';
+import { quillModules } from '@/utils/quill-opt';
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -95,8 +96,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <DatePicker placeholder="Deadline" style={{ width: '100%' }} showTime />
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true }]}>
-          {/* <TextArea placeholder="Describe the task" rows={10} /> */}
-          <ReactQuill theme="snow" />
+          <ReactQuill theme="snow" modules={quillModules} />
         </FormItem>
       </Form>
     </Modal>

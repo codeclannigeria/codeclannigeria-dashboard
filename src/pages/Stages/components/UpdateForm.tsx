@@ -1,4 +1,5 @@
 import { trackService } from '@/pages/Tracks/service';
+import { quillModules } from '@/utils/quill-opt';
 import { Button, Form, Input, Modal, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
@@ -96,7 +97,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Select>
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true, max: 1024 }]}>
-          <ReactQuill theme="snow" />
+          <ReactQuill theme="snow" modules={quillModules} />
         </FormItem>
       </Form>
     </Modal>
