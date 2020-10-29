@@ -1,7 +1,8 @@
 import { trackService } from '@/pages/Tracks/service';
 import { Button, Form, Input, Modal, Select } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
+import 'react-quill/dist/quill.snow.css';
 import React, { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
 
 interface CreateFormProps {
   loading: boolean;
@@ -80,7 +81,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           </Select>
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true, max: 1024 }]}>
-          <TextArea placeholder="Describe the stage" rows={10} />
+          <ReactQuill theme="snow" />
         </FormItem>
       </Form>
     </Modal>

@@ -1,6 +1,8 @@
 import { trackService } from '@/pages/Tracks/service';
 import { Button, Form, Input, Modal, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: Partial<API.StageDto>) => void;
@@ -16,7 +18,6 @@ export interface UpdateFormState {
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const { TextArea } = Input;
 
 const formLayout = {
   labelCol: { span: 3 },
@@ -95,7 +96,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Select>
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true, max: 1024 }]}>
-          <TextArea placeholder="Describe the stage" rows={10} />
+          <ReactQuill theme="snow" />
         </FormItem>
       </Form>
     </Modal>

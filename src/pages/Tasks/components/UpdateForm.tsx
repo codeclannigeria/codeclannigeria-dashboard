@@ -110,7 +110,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <DatePicker placeholder="Deadline" style={{ width: '100%' }} showTime />
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true }]}>
-          {/* <TextArea placeholder="Describe the task" rows={10} /> */}
           <ReactQuill theme="snow" />
         </FormItem>
       </Form>
