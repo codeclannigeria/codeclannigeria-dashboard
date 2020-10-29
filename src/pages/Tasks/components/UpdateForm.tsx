@@ -1,8 +1,11 @@
+import 'react-quill/dist/quill.snow.css';
+
 import { trackService } from '@/pages/Tracks/service';
 import { getEntities } from '@/services/base.service';
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
 
 export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: Partial<API.TaskDto>) => void;
@@ -11,7 +14,6 @@ export interface UpdateFormProps {
   values: Partial<API.TaskDto>;
 }
 const FormItem = Form.Item;
-const { TextArea } = Input;
 const { Option } = Select;
 
 export interface UpdateFormState {
@@ -108,7 +110,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <DatePicker placeholder="Deadline" style={{ width: '100%' }} showTime />
         </FormItem>
         <FormItem name="description" label="Desc" rules={[{ required: true }]}>
-          <TextArea placeholder="Describe the task" rows={10} />
+          {/* <TextArea placeholder="Describe the task" rows={10} /> */}
+          <ReactQuill theme="snow" />
         </FormItem>
       </Form>
     </Modal>
