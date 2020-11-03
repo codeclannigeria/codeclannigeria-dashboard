@@ -48,6 +48,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           onClick={(e) => {
             e.preventDefault();
             form.validateFields().then(async (value) => {
+              // Added this line to allow modification of argument.
               // eslint-disable-next-line no-param-reassign
               value.deadline = moment(value.deadline).toISOString();
               const task = value as API.CreateTaskDto;
